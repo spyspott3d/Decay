@@ -26,6 +26,13 @@ end
 
 function methods:ApplyLockState(unlocked)
   self.frame:EnableMouse(unlocked)
+  if unlocked then
+    self.frame:SetFrameStrata("FULLSCREEN_DIALOG")
+    self.frame:SetFrameLevel(200)
+  else
+    self.frame:SetFrameStrata("MEDIUM")
+    self.frame:SetFrameLevel(0)
+  end
 end
 
 function methods:CreateSlots()
