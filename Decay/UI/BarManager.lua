@@ -142,3 +142,11 @@ function BarManager:ApplyVisibilityRules()
     widget:ApplyVisibilityRules()
   end
 end
+
+function BarManager:UpdateAllSlotVisibility()
+  for _, widget in pairs(self.bars) do
+    for _, slot in ipairs(widget.slots) do
+      slot:UpdateVisibility()
+    end
+  end
+end

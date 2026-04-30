@@ -249,15 +249,6 @@ local function buildBarsTabArgs()
 end
 
 local function buildDisplayTabArgs()
-  local function defaultGetter(key)
-    return function() return Decay.db.global.settings.defaults[key] end
-  end
-  local function defaultSetter(key)
-    return function(_, val)
-      Decay.db.global.settings.defaults[key] = val
-      Decay.UI.BarManager:UpdateAll()
-    end
-  end
   return {
     thresholdsHeader = { type = "header", name = L["Thresholds"], order = 1 },
     yellowThreshold = {
@@ -297,50 +288,6 @@ local function buildDisplayTabArgs()
       type = "color", name = L["Red color"], order = 13, hasAlpha = true,
       get = function() return colorGet("red") end,
       set = function(_, r, g, b, a) colorSet("red", r, g, b, a) end,
-    },
-    defaultsHeader = { type = "header", name = L["Default visual settings"], order = 20 },
-    defaultsDesc = {
-      type = "description", order = 21,
-      name = L["These apply to bars that have not overridden them."],
-    },
-    defaultIconSize = {
-      type = "range", name = L["Icon size"], order = 22,
-      min = 16, max = 64, step = 1,
-      get = defaultGetter("iconSize"), set = defaultSetter("iconSize"),
-    },
-    defaultBarLength = {
-      type = "range", name = L["Bar length"], order = 23,
-      min = 40, max = 200, step = 1,
-      get = defaultGetter("barLength"), set = defaultSetter("barLength"),
-    },
-    defaultBarThickness = {
-      type = "range", name = L["Bar thickness"], order = 24,
-      min = 16, max = 64, step = 1,
-      get = defaultGetter("barThickness"), set = defaultSetter("barThickness"),
-    },
-    defaultSpacing = {
-      type = "range", name = L["Spacing"], order = 25,
-      min = 0, max = 20, step = 1,
-      get = defaultGetter("spacing"), set = defaultSetter("spacing"),
-    },
-    defaultShowTimerText = {
-      type = "toggle", name = L["Show timer text"], order = 26,
-      get = defaultGetter("showTimerText"), set = defaultSetter("showTimerText"),
-    },
-    defaultTimerTextSize = {
-      type = "range", name = L["Timer text size"], order = 27,
-      min = 8, max = 24, step = 1,
-      get = defaultGetter("timerTextSize"), set = defaultSetter("timerTextSize"),
-    },
-    defaultTimerTextFormat = {
-      type = "select", name = L["Timer text format"], order = 28,
-      values = function() return TIMER_FORMATS end,
-      get = defaultGetter("timerTextFormat"), set = defaultSetter("timerTextFormat"),
-    },
-    defaultTexture = {
-      type = "select", name = L["Texture"], order = 29,
-      values = function() return TEXTURE_VALUES end,
-      get = defaultGetter("texture"), set = defaultSetter("texture"),
     },
   }
 end

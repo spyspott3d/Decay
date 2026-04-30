@@ -228,12 +228,26 @@ end
 
 function methods:UpdateVisibility()
   local active = Decay.State.activeSlots[self:Key()]
-  local unlocked = Decay.db.global.state.unlocked
-  if active or unlocked then
+  if active then
     self.frame:Show()
-  else
-    self.frame:Hide()
+    return
   end
+
+  local unlocked = Decay.db.global.state.unlocked
+  if not unlocked then
+    self.frame:Hide()
+    return
+  end
+
+  local cfg = self:GetConfig()
+  local rules = self.barWidget.config.visibility
+  if cfg and cfg.auraType == "debuff" and rules and rules.targetRequired
+      and not UnitExists("target") then
+    self.frame:Hide()
+    return
+  end
+
+  self.frame:Show()
 end
 
 function methods:ApplyLockState(unlocked)
