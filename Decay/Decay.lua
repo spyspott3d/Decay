@@ -14,6 +14,7 @@ end
 function Decay:OnEnable()
   self.UI.BarManager:RestoreAll()
   self.AuraScanner:StartPolling()
+  self.AuraScanner:StartCastListener()
   self.Config.Options:Init()
   self.Events:RegisterAll()
 end
@@ -82,16 +83,18 @@ function Decay:OnSlashCommand(input)
     self.runtimeHalted = true
     self.Events:UnregisterAll()
     self.AuraScanner:StopPolling()
+    self.AuraScanner:StopCastListener()
     for _, widget in pairs(self.UI.BarManager.bars) do
       for _, slot in ipairs(widget.slots) do
         if slot.frame then slot.frame:SetScript("OnUpdate", nil) end
       end
     end
-    self:Print("halted: events + poll unregistered, slot OnUpdates cleared")
+    self:Print("halted: events + poll + cast listener stopped")
   elseif input == "resume" then
     self.runtimeHalted = false
     self.Events:RegisterAll()
     self.AuraScanner:StartPolling()
+    self.AuraScanner:StartCastListener()
     self.AuraScanner:RescanAll()
     self:Print("resumed")
   else
