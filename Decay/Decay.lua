@@ -32,7 +32,6 @@ end
 
 function Decay:OnTargetChanged()
   self.AuraScanner:ScanUnit("target")
-  self.UI.BarManager:UpdateAllSlotVisibility()
 end
 
 function Decay:OnEnterCombat()

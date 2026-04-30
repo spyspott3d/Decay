@@ -218,7 +218,6 @@ local function applyDefaults(barConfig)
     barConfig.visibility = {
       combatOnly = false,
       inInstanceOnly = false,
-      targetRequired = true,
     }
   end
 end

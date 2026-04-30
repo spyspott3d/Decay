@@ -196,12 +196,6 @@ local function buildBarArgs(bc)
         if widget then widget:ApplyVisibilityRules() end
       end,
     },
-    targetRequired = {
-      type = "toggle", name = L["Target required"], order = 33,
-      desc = L["Hide debuff slots when no target is selected"],
-      get = function() return bc.visibility.targetRequired end,
-      set = function(_, val) bc.visibility.targetRequired = val end,
-    },
     actionsHeader = { type = "header", name = "", order = 90 },
     resetPosition = {
       type = "execute", name = L["Reset position"], order = 91,

@@ -38,7 +38,6 @@ local function defaultBarConfig(index)
     visibility = {
       combatOnly = false,
       inInstanceOnly = false,
-      targetRequired = true,
     },
     position = {
       point = "CENTER",
@@ -140,13 +139,5 @@ end
 function BarManager:ApplyVisibilityRules()
   for _, widget in pairs(self.bars) do
     widget:ApplyVisibilityRules()
-  end
-end
-
-function BarManager:UpdateAllSlotVisibility()
-  for _, widget in pairs(self.bars) do
-    for _, slot in ipairs(widget.slots) do
-      slot:UpdateVisibility()
-    end
   end
 end

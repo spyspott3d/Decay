@@ -63,8 +63,6 @@ L["Combat only"] = true
 L["Hide bars when out of combat"] = true
 L["In instance only"] = true
 L["Hide bars when not in a dungeon or raid"] = true
-L["Target required"] = true
-L["Hide debuff slots when no target is selected"] = true
 
 L["Reset to defaults"] = true
 L["Reset all bars and settings to defaults?"] = true
