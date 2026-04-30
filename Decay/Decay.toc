@@ -25,3 +25,11 @@ Locale\heuristics\esES.lua
 Locale\heuristics\zhCN.lua
 
 Decay.lua
+
+Core\Database.lua
+
+UI\Bar.lua
+UI\BarManager.lua
+UI\Lock.lua
+
+Config\Options.lua
