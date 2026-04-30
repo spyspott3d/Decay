@@ -274,6 +274,17 @@ function methods:Layout(orientation, fadeDirection, iconSize, barLength, barThic
       self.bar:SetPoint("RIGHT", self.icon, "LEFT")
     end
   end
+
+  local data = Decay.State and Decay.State.activeSlots[self:Key()]
+  if data then
+    if data.duration == 0 then
+      self:SetFill(1)
+    else
+      local remaining = data.expirationTime - GetTime()
+      if remaining < 0 then remaining = 0 end
+      self:SetFill(remaining / data.duration)
+    end
+  end
 end
 
 function methods:ApplyTimerSettings(showText, size, format)

@@ -18,11 +18,6 @@ local defaults = {
         yellow = { 0.898, 0.753, 0.235, 1.0 },
         red    = { 0.816, 0.251, 0.251, 1.0 },
       },
-      visibility = {
-        combatOnly = false,
-        inInstanceOnly = false,
-        targetRequired = true,
-      },
       defaults = {
         iconSize = 32,
         barLength = 100,

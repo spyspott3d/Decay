@@ -175,6 +175,33 @@ local function buildBarArgs(bc)
       get = visualGetter(bc, "timerTextFormat"),
       set = visualSetter(bc, "timerTextFormat"),
     },
+    visibilityHeader = { type = "header", name = L["Visibility rules"], order = 30 },
+    combatOnly = {
+      type = "toggle", name = L["Combat only"], order = 31,
+      desc = L["Hide bars when out of combat"],
+      get = function() return bc.visibility.combatOnly end,
+      set = function(_, val)
+        bc.visibility.combatOnly = val
+        local widget = Decay.UI.BarManager.bars[bc.id]
+        if widget then widget:ApplyVisibilityRules() end
+      end,
+    },
+    inInstanceOnly = {
+      type = "toggle", name = L["In instance only"], order = 32,
+      desc = L["Hide bars when not in a dungeon or raid"],
+      get = function() return bc.visibility.inInstanceOnly end,
+      set = function(_, val)
+        bc.visibility.inInstanceOnly = val
+        local widget = Decay.UI.BarManager.bars[bc.id]
+        if widget then widget:ApplyVisibilityRules() end
+      end,
+    },
+    targetRequired = {
+      type = "toggle", name = L["Target required"], order = 33,
+      desc = L["Hide debuff slots when no target is selected"],
+      get = function() return bc.visibility.targetRequired end,
+      set = function(_, val) bc.visibility.targetRequired = val end,
+    },
     actionsHeader = { type = "header", name = "", order = 90 },
     resetPosition = {
       type = "execute", name = L["Reset position"], order = 91,
@@ -324,33 +351,6 @@ local function buildGeneralTabArgs()
       type = "toggle", name = L["Unlock bars"], order = 1,
       get = function() return Decay.UI.Lock:IsUnlocked() end,
       set = function(_, val) Decay.UI.Lock:Set(val) end,
-    },
-    visibilityHeader = { type = "header", name = L["Visibility rules"], order = 10 },
-    combatOnly = {
-      type = "toggle", name = L["Combat only"], order = 11,
-      desc = L["Hide bars when out of combat"],
-      get = function() return Decay.db.global.settings.visibility.combatOnly end,
-      set = function(_, val)
-        Decay.db.global.settings.visibility.combatOnly = val
-        Decay.UI.BarManager:ApplyVisibilityRules()
-      end,
-    },
-    inInstanceOnly = {
-      type = "toggle", name = L["In instance only"], order = 12,
-      desc = L["Hide bars when not in a dungeon or raid"],
-      get = function() return Decay.db.global.settings.visibility.inInstanceOnly end,
-      set = function(_, val)
-        Decay.db.global.settings.visibility.inInstanceOnly = val
-        Decay.UI.BarManager:ApplyVisibilityRules()
-      end,
-    },
-    targetRequired = {
-      type = "toggle", name = L["Target required"], order = 13,
-      desc = L["Hide debuff slots when no target is selected"],
-      get = function() return Decay.db.global.settings.visibility.targetRequired end,
-      set = function(_, val)
-        Decay.db.global.settings.visibility.targetRequired = val
-      end,
     },
     resetHeader = { type = "header", name = "", order = 90 },
     reset = {

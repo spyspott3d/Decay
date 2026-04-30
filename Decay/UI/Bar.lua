@@ -40,7 +40,8 @@ function methods:ResetPosition()
 end
 
 function methods:HiddenByRules()
-  local rules = Decay.db.global.settings.visibility
+  local rules = self.config.visibility
+  if not rules then return false end
   if rules.combatOnly and not Decay.State.inCombat then return true end
   if rules.inInstanceOnly then
     local inInstance = IsInInstance()
@@ -213,6 +214,13 @@ local function applyDefaults(barConfig)
   barConfig.slots = barConfig.slots or {}
   barConfig.sortMode = barConfig.sortMode or "fixed"
   barConfig.visual = barConfig.visual or {}
+  if not barConfig.visibility then
+    barConfig.visibility = {
+      combatOnly = false,
+      inInstanceOnly = false,
+      targetRequired = true,
+    }
+  end
 end
 
 local function savePosition(frame, barConfig)

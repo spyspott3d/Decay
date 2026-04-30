@@ -35,6 +35,11 @@ local function defaultBarConfig(index)
     sortMode = "fixed",
     slots = {},
     visual = {},
+    visibility = {
+      combatOnly = false,
+      inInstanceOnly = false,
+      targetRequired = true,
+    },
     position = {
       point = "CENTER",
       relativeTo = "UIParent",
