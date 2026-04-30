@@ -22,6 +22,9 @@ local function defaultBarConfig(index)
   return {
     id = generateId(),
     name = defaultName(index),
+    orientation = "horizontal",
+    fadeDirection = "above",
+    slotCount = 4,
     position = {
       point = "CENTER",
       relativeTo = "UIParent",
@@ -62,6 +65,13 @@ end
 function BarManager:RenameDefaults()
   for i, bc in ipairs(Decay.db.global.bars) do
     bc.name = defaultName(i)
+  end
+end
+
+function BarManager:UpdateBar(barId)
+  local widget = self.bars[barId]
+  if widget then
+    widget:UpdateLayout()
   end
 end
 

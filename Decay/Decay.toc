@@ -28,6 +28,7 @@ Decay.lua
 
 Core\Database.lua
 
+UI\Slot.lua
 UI\Bar.lua
 UI\BarManager.lua
 UI\Lock.lua
