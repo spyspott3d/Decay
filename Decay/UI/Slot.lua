@@ -74,6 +74,7 @@ function methods:SetAuraType(t)
 end
 
 function methods:RefreshDisplay()
+  if self.fillLength then self:RestoreFullBarSize() end
   local cfg = self:GetConfig()
   if cfg then
     self.icon:SetTexture(cfg.auraIcon or PLACEHOLDER_ICON)
@@ -98,6 +99,11 @@ function methods:RefreshActiveDisplay()
 
   self.icon:SetTexture(data.auraIcon or cfg.auraIcon or PLACEHOLDER_ICON)
   self.icon:SetVertexColor(1, 1, 1, 1)
+
+  if self.fillLength then
+    self:RestoreFullBarSize()
+    self.bar:SetValue(1)
+  end
 
   if data.stackCount and data.stackCount > 1 then
     self.stackText:SetText(tostring(data.stackCount))
@@ -129,6 +135,7 @@ local function slotOnUpdate(frame, elapsed)
   local colors = settings.colors
 
   if data.duration == 0 then
+    widget:SetFill(1)
     widget.bar:SetValue(1)
     widget.bar:SetStatusBarColor(unpack(colors.green))
     widget.text:SetText("∞")
@@ -144,7 +151,8 @@ local function slotOnUpdate(frame, elapsed)
   end
 
   local pct = remaining / data.duration
-  widget.bar:SetValue(pct)
+  widget:SetFill(pct)
+  widget.bar:SetValue(1)
 
   local thresholds = settings.thresholds
   if pct >= thresholds.yellow then
@@ -197,13 +205,14 @@ function methods:Layout(orientation, fadeDirection, iconSize, barLength, barThic
   self.icon:SetSize(iconSize, iconSize)
   self.bar:ClearAllPoints()
 
+  self.fillLength = barLength
+  self.fillThickness = barThickness
+
   if orientation == "horizontal" then
     self.frame:SetSize(max(iconSize, barThickness), iconSize + barLength)
+    self.fillAxis = "height"
     self.bar:SetSize(barThickness, barLength)
     self.bar:SetOrientation("VERTICAL")
-    if self.bar.SetReverseFill then
-      self.bar:SetReverseFill(fadeDirection == "below")
-    end
     if fadeDirection == "below" then
       self.icon:SetPoint("TOP", self.frame, "TOP")
       self.bar:SetPoint("TOP", self.icon, "BOTTOM")
@@ -213,11 +222,9 @@ function methods:Layout(orientation, fadeDirection, iconSize, barLength, barThic
     end
   else
     self.frame:SetSize(iconSize + barLength, max(iconSize, barThickness))
+    self.fillAxis = "width"
     self.bar:SetSize(barLength, barThickness)
     self.bar:SetOrientation("HORIZONTAL")
-    if self.bar.SetReverseFill then
-      self.bar:SetReverseFill(fadeDirection == "left")
-    end
     if fadeDirection == "right" then
       self.icon:SetPoint("LEFT", self.frame, "LEFT")
       self.bar:SetPoint("LEFT", self.icon, "RIGHT")
@@ -225,6 +232,23 @@ function methods:Layout(orientation, fadeDirection, iconSize, barLength, barThic
       self.icon:SetPoint("RIGHT", self.frame, "RIGHT")
       self.bar:SetPoint("RIGHT", self.icon, "LEFT")
     end
+  end
+end
+
+function methods:SetFill(pct)
+  if pct < 0 then pct = 0 elseif pct > 1 then pct = 1 end
+  if self.fillAxis == "height" then
+    self.bar:SetHeight(pct * self.fillLength)
+  else
+    self.bar:SetWidth(pct * self.fillLength)
+  end
+end
+
+function methods:RestoreFullBarSize()
+  if self.fillAxis == "height" then
+    self.bar:SetHeight(self.fillLength)
+  else
+    self.bar:SetWidth(self.fillLength)
   end
 end
 
