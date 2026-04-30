@@ -11,21 +11,10 @@ function Decay:OnInitialize()
   self:RegisterChatCommand("dc", "OnSlashCommand")
 end
 
-local function ensureOptionsLoaded()
-  if Decay.Config and Decay.Config.Options and Decay.Config.Options.dialog then
-    return true
-  end
-  local loaded, reason = LoadAddOn("Decay_Options")
-  if not loaded then
-    Decay:Print("Decay_Options failed to load: " .. tostring(reason))
-    return false
-  end
-  return Decay.Config and Decay.Config.Options and Decay.Config.Options.dialog ~= nil
-end
-
 function Decay:OnEnable()
   self.UI.BarManager:RestoreAll()
   self.AuraScanner:StartPolling()
+  self.Config.Options:Init()
   self.Events:RegisterAll()
 end
 
@@ -76,9 +65,7 @@ end
 function Decay:OnSlashCommand(input)
   input = input and input:lower():match("^%s*(.-)%s*$") or ""
   if input == "" then
-    if ensureOptionsLoaded() then
-      self.Config.Options:Toggle()
-    end
+    self.Config.Options:Toggle()
   elseif input == "lock" then
     self.UI.Lock:Set(false)
   elseif input == "unlock" then

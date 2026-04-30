@@ -2,7 +2,6 @@ std = "lua51+playerwow"
 
 exclude_files = {
   "Decay/Libs/",
-  "Decay_Options/Libs/",
 }
 
 stds.playerwow = {
