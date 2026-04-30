@@ -26,6 +26,7 @@ L["Slot count"] = true
 L["Sort mode"] = true
 L["Fixed"] = true
 L["By remaining time"] = true
+L["Fixed keeps each slot at its assigned position. By remaining time sorts active slots so the longest is closest to the icon side."] = true
 
 L["Reset position"] = true
 
@@ -45,10 +46,13 @@ L["Timer text format"] = true
 L["Auto"] = true
 L["Seconds only"] = true
 L["MM:SS"] = true
+L["Auto: m:ss above 60s, s.s under 10s, integer seconds in between. Seconds only: always integer seconds. MM:SS: always m:ss."] = true
 
 L["Thresholds"] = true
 L["Upper threshold"] = true
+L["Above this remaining-time percentage, the bar uses the high color."] = true
 L["Lower threshold"] = true
+L["Below this remaining-time percentage, the bar uses the low color."] = true
 L["Colors"] = true
 L["High color"] = true
 L["Mid color"] = true

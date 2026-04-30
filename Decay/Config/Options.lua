@@ -116,6 +116,7 @@ local function buildBarArgs(bc)
     sortMode = {
       type = "select",
       name = L["Sort mode"],
+      desc = L["Fixed keeps each slot at its assigned position. By remaining time sorts active slots so the longest is closest to the icon side."],
       order = 5,
       values = function()
         return { fixed = L["Fixed"], byRemaining = L["By remaining time"] }
@@ -171,6 +172,7 @@ local function buildBarArgs(bc)
     },
     timerTextFormat = {
       type = "select", name = L["Timer text format"], order = 23,
+      desc = L["Auto: m:ss above 60s, s.s under 10s, integer seconds in between. Seconds only: always integer seconds. MM:SS: always m:ss."],
       values = function() return TIMER_FORMATS end,
       get = visualGetter(bc, "timerTextFormat"),
       set = visualSetter(bc, "timerTextFormat"),
@@ -247,6 +249,7 @@ local function buildDisplayTabArgs()
     thresholdsHeader = { type = "header", name = L["Thresholds"], order = 1 },
     yellowThreshold = {
       type = "range", name = L["Upper threshold"], order = 2,
+      desc = L["Above this remaining-time percentage, the bar uses the high color."],
       min = 0.05, max = 0.95, step = 0.01, isPercent = true,
       get = function() return Decay.db.global.settings.thresholds.yellow end,
       set = function(_, val)
@@ -258,6 +261,7 @@ local function buildDisplayTabArgs()
     },
     redThreshold = {
       type = "range", name = L["Lower threshold"], order = 3,
+      desc = L["Below this remaining-time percentage, the bar uses the low color."],
       min = 0.01, max = 0.9, step = 0.01, isPercent = true,
       get = function() return Decay.db.global.settings.thresholds.red end,
       set = function(_, val)
