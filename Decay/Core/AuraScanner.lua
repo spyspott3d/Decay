@@ -184,9 +184,12 @@ end
 
 local castQueue = {}
 
-function AuraScanner:QueuePlayerCast(spellName, timestamp)
-  castQueue[#castQueue + 1] = { spellName = spellName, time = timestamp }
-end
+local castListener = CreateFrame("Frame")
+castListener:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+castListener:SetScript("OnEvent", function(_, _, unit, spellName)
+  if unit ~= "player" or not spellName then return end
+  castQueue[#castQueue + 1] = { spellName = spellName, time = GetTime() }
+end)
 
 local function drainCastQueue()
   if #castQueue == 0 then return end

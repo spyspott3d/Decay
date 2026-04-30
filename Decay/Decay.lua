@@ -48,13 +48,6 @@ function Decay:OnZoneChanged()
   self.UI.BarManager:ApplyVisibilityRules()
 end
 
-function Decay:OnSpellCastSucceeded(_, unit, spellName)
-  if unit ~= "player" or not spellName then return end
-  -- Defer work out of the secure event call chain to avoid tainting
-  -- secure functions like BindEnchant() when the cast triggers a
-  -- weapon enchant prompt (e.g. Deadly Poison).
-  self.AuraScanner:QueuePlayerCast(spellName, GetTime())
-end
 
 function Decay:ResetAll()
   self.db:ResetDB()
