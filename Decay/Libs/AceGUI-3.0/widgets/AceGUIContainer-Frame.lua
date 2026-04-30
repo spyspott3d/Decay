@@ -191,12 +191,9 @@ local function Constructor()
 	statusbg:SetPoint("BOTTOMLEFT", 15, 15)
 	statusbg:SetPoint("BOTTOMRIGHT", -132, 15)
 	statusbg:SetHeight(24)
-	statusbg:SetBackdrop(PaneBackdrop)
-	statusbg:SetBackdropColor(0.1,0.1,0.1)
-	statusbg:SetBackdropBorderColor(0.4,0.4,0.4)
-	statusbg:SetScript("OnEnter", StatusBar_OnEnter)
-	statusbg:SetScript("OnLeave", StatusBar_OnLeave)
-	statusbg:Hide() -- Decay: hide unused status bar background for cleaner look
+	-- Decay: backdrop and tooltip behavior removed to keep the unused status bar invisible
+	statusbg:Hide()
+	statusbg.Show = statusbg.Hide -- block any later re-show
 
 	local statustext = statusbg:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	statustext:SetPoint("TOPLEFT", 7, -2)
