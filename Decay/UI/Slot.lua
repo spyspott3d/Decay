@@ -201,7 +201,9 @@ function methods:Layout(orientation, fadeDirection, iconSize, barLength, barThic
     self.frame:SetSize(max(iconSize, barThickness), iconSize + barLength)
     self.bar:SetSize(barThickness, barLength)
     self.bar:SetOrientation("VERTICAL")
-    self.bar:SetReverseFill(fadeDirection == "below")
+    if self.bar.SetReverseFill then
+      self.bar:SetReverseFill(fadeDirection == "below")
+    end
     if fadeDirection == "below" then
       self.icon:SetPoint("TOP", self.frame, "TOP")
       self.bar:SetPoint("TOP", self.icon, "BOTTOM")
@@ -213,7 +215,9 @@ function methods:Layout(orientation, fadeDirection, iconSize, barLength, barThic
     self.frame:SetSize(iconSize + barLength, max(iconSize, barThickness))
     self.bar:SetSize(barLength, barThickness)
     self.bar:SetOrientation("HORIZONTAL")
-    self.bar:SetReverseFill(fadeDirection == "left")
+    if self.bar.SetReverseFill then
+      self.bar:SetReverseFill(fadeDirection == "left")
+    end
     if fadeDirection == "right" then
       self.icon:SetPoint("LEFT", self.frame, "LEFT")
       self.bar:SetPoint("LEFT", self.icon, "RIGHT")
