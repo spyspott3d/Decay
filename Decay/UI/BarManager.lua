@@ -18,6 +18,13 @@ local function defaultName(index)
   return L["Bar"] .. " " .. index
 end
 
+local function isDefaultName(name)
+  if not name then return false end
+  local prefix = L["Bar"] .. " "
+  if name:sub(1, #prefix) ~= prefix then return false end
+  return name:sub(#prefix + 1):match("^%d+$") ~= nil
+end
+
 local function defaultBarConfig(index)
   return {
     id = generateId(),
@@ -64,7 +71,9 @@ end
 
 function BarManager:RenameDefaults()
   for i, bc in ipairs(Decay.db.global.bars) do
-    bc.name = defaultName(i)
+    if isDefaultName(bc.name) then
+      bc.name = defaultName(i)
+    end
   end
 end
 
