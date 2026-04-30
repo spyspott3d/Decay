@@ -6,6 +6,7 @@ local Lock = Decay.UI.Lock
 function Lock:Set(unlocked)
   Decay.db.global.state.unlocked = unlocked and true or false
   Decay.UI.BarManager:ApplyLockState()
+  Decay.Config.Options:Refresh()
 end
 
 function Lock:Toggle()

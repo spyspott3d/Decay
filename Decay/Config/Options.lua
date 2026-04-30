@@ -3,6 +3,8 @@ Decay.Config = Decay.Config or {}
 Decay.Config.Options = Decay.Config.Options or {}
 local Options = Decay.Config.Options
 
+local L = LibStub("AceLocale-3.0"):GetLocale("Decay")
+
 local APP = "Decay"
 
 local function buildOptionsTable()
@@ -12,12 +14,12 @@ local function buildOptionsTable()
     args = {
       bars = {
         type = "group",
-        name = "Bars",
+        name = L["Bars"],
         order = 1,
         args = {
           newBar = {
             type = "execute",
-            name = "New bar",
+            name = L["New bar"],
             order = 1,
             func = function()
               Decay.UI.BarManager:CreateBar()
@@ -26,7 +28,7 @@ local function buildOptionsTable()
           },
           unlockToggle = {
             type = "toggle",
-            name = "Unlock bars",
+            name = L["Unlock bars"],
             order = 2,
             get = function() return Decay.UI.Lock:IsUnlocked() end,
             set = function(_, val) Decay.UI.Lock:Set(val) end,
@@ -47,9 +49,9 @@ local function buildOptionsTable()
       args = {
         delete = {
           type = "execute",
-          name = "Delete",
+          name = L["Delete"],
           confirm = true,
-          confirmText = "Delete this bar?",
+          confirmText = L["Delete this bar?"],
           func = function()
             Decay.UI.BarManager:DeleteBar(barId)
             Options:Refresh()

@@ -3,6 +3,8 @@ _G.Decay = Decay
 
 Decay.VERSION = "1.0.0"
 
+local L = LibStub("AceLocale-3.0"):GetLocale("Decay")
+
 function Decay:OnInitialize()
   self.Database:Init()
   self.UI.BarManager:RestoreAll()
@@ -24,10 +26,10 @@ function Decay:OnSlashCommand(input)
   elseif input == "unlock" then
     self.UI.Lock:Set(true)
   elseif input == "reset" then
-    self:Print("/decay reset is not implemented yet")
+    self:Print(L["Reset is not yet implemented"])
   elseif input == "logs" then
-    self:Print("/decay logs is not implemented yet")
+    self:Print(L["Logs are not yet implemented"])
   else
-    self:Print("Unknown command: " .. input)
+    self:Print(L["Unknown command: %s"]:format(input))
   end
 end

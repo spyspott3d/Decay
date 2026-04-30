@@ -3,6 +3,7 @@ Decay.UI = Decay.UI or {}
 Decay.UI.BarManager = Decay.UI.BarManager or {}
 local BarManager = Decay.UI.BarManager
 
+local L = LibStub("AceLocale-3.0"):GetLocale("Decay")
 local GetTime = GetTime
 
 BarManager.bars = {}
@@ -13,10 +14,14 @@ local function generateId()
   return "bar-" .. tostring(math.floor(GetTime() * 1000)) .. "-" .. idCounter
 end
 
+local function defaultName(index)
+  return L["Bar"] .. " " .. index
+end
+
 local function defaultBarConfig(index)
   return {
     id = generateId(),
-    name = "Bar " .. index,
+    name = defaultName(index),
     position = {
       point = "CENTER",
       relativeTo = "UIParent",
@@ -50,6 +55,13 @@ function BarManager:DeleteBar(barId)
   if self.bars[barId] then
     self.bars[barId]:Destroy()
     self.bars[barId] = nil
+  end
+  self:RenameDefaults()
+end
+
+function BarManager:RenameDefaults()
+  for i, bc in ipairs(Decay.db.global.bars) do
+    bc.name = defaultName(i)
   end
 end
 
