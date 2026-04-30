@@ -26,7 +26,7 @@ L["Slot count"] = "Número de huecos"
 L["Sort mode"] = "Modo de orden"
 L["Fixed"] = "Fijo"
 L["By remaining time"] = "Por tiempo restante"
-L["Fixed keeps each slot at its assigned position. By remaining time sorts active slots so the longest is closest to the icon side."] = "Fijo: cada hueco se queda en su posición asignada. Por tiempo restante: ordena los huecos activos para que el más largo esté más cerca del icono."
+L["FIXED_DESC"] = "Fijo: cada hueco se queda en su posición asignada.\nPor tiempo restante: ordena los huecos activos, el más largo más cerca del icono."
 
 L["Reset position"] = "Restablecer posición"
 
@@ -46,7 +46,7 @@ L["Timer text format"] = "Formato del texto"
 L["Auto"] = "Auto"
 L["Seconds only"] = "Solo segundos"
 L["MM:SS"] = "MM:SS"
-L["Auto: m:ss above 60s, s.s under 10s, integer seconds in between. Seconds only: always integer seconds. MM:SS: always m:ss."] = "Auto: m:ss por encima de 60s, s.s por debajo de 10s, segundos enteros en medio. Solo segundos: siempre segundos enteros. MM:SS: siempre m:ss."
+L["TIMER_FORMAT_DESC"] = "Auto: m:ss por encima de 60s, s.s por debajo de 10s, segundos enteros en medio.\nSolo segundos: siempre segundos enteros.\nMM:SS: siempre m:ss."
 
 L["Thresholds"] = "Umbrales"
 L["Upper threshold"] = "Umbral superior"

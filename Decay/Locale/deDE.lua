@@ -26,7 +26,7 @@ L["Slot count"] = "Plätze"
 L["Sort mode"] = "Sortiermodus"
 L["Fixed"] = "Fest"
 L["By remaining time"] = "Nach Restzeit"
-L["Fixed keeps each slot at its assigned position. By remaining time sorts active slots so the longest is closest to the icon side."] = "Fest: jeder Platz bleibt an seiner zugewiesenen Position. Nach Restzeit: aktive Plätze werden so sortiert, dass der längste am nächsten zum Symbol ist."
+L["FIXED_DESC"] = "Fest: jeder Platz bleibt an seiner zugewiesenen Position.\nNach Restzeit: aktive Plätze werden sortiert, längster am nächsten zum Symbol."
 
 L["Reset position"] = "Position zurücksetzen"
 
@@ -46,7 +46,7 @@ L["Timer text format"] = "Textformat"
 L["Auto"] = "Auto"
 L["Seconds only"] = "Nur Sekunden"
 L["MM:SS"] = "MM:SS"
-L["Auto: m:ss above 60s, s.s under 10s, integer seconds in between. Seconds only: always integer seconds. MM:SS: always m:ss."] = "Auto: m:ss über 60s, s.s unter 10s, ganze Sekunden dazwischen. Nur Sekunden: immer ganze Sekunden. MM:SS: immer m:ss."
+L["TIMER_FORMAT_DESC"] = "Auto: m:ss über 60s, s.s unter 10s, ganze Sekunden dazwischen.\nNur Sekunden: immer ganze Sekunden.\nMM:SS: immer m:ss."
 
 L["Thresholds"] = "Schwellen"
 L["Upper threshold"] = "Obere Schwelle"

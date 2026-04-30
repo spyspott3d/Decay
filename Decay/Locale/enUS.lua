@@ -26,7 +26,7 @@ L["Slot count"] = true
 L["Sort mode"] = true
 L["Fixed"] = true
 L["By remaining time"] = true
-L["Fixed keeps each slot at its assigned position. By remaining time sorts active slots so the longest is closest to the icon side."] = true
+L["FIXED_DESC"] = "Fixed: each slot stays at its assigned position.\nBy remaining time: active slots are sorted, longest closest to the icon."
 
 L["Reset position"] = true
 
@@ -46,7 +46,7 @@ L["Timer text format"] = true
 L["Auto"] = true
 L["Seconds only"] = true
 L["MM:SS"] = true
-L["Auto: m:ss above 60s, s.s under 10s, integer seconds in between. Seconds only: always integer seconds. MM:SS: always m:ss."] = true
+L["TIMER_FORMAT_DESC"] = "Auto: m:ss above 60s, s.s under 10s, integer seconds in between.\nSeconds only: always integer seconds.\nMM:SS: always m:ss."
 
 L["Thresholds"] = true
 L["Upper threshold"] = true

@@ -26,7 +26,7 @@ L["Slot count"] = "槽位数量"
 L["Sort mode"] = "排序模式"
 L["Fixed"] = "固定"
 L["By remaining time"] = "按剩余时间"
-L["Fixed keeps each slot at its assigned position. By remaining time sorts active slots so the longest is closest to the icon side."] = "固定:每个槽位保持在分配位置。按剩余时间:对活动槽位排序,最长剩余时间最靠近图标。"
+L["FIXED_DESC"] = "固定:每个槽位保持在分配位置。\n按剩余时间:对活动槽位排序,最长剩余时间最靠近图标。"
 
 L["Reset position"] = "重置位置"
 
@@ -46,7 +46,7 @@ L["Timer text format"] = "文字格式"
 L["Auto"] = "自动"
 L["Seconds only"] = "仅秒"
 L["MM:SS"] = "MM:SS"
-L["Auto: m:ss above 60s, s.s under 10s, integer seconds in between. Seconds only: always integer seconds. MM:SS: always m:ss."] = "自动:超过60秒显示m:ss,小于10秒显示s.s,中间显示整数秒。仅秒:始终整数秒。MM:SS:始终m:ss。"
+L["TIMER_FORMAT_DESC"] = "自动:超过60秒显示m:ss,小于10秒显示s.s,中间显示整数秒。\n仅秒:始终整数秒。\nMM:SS:始终m:ss。"
 
 L["Thresholds"] = "阈值"
 L["Upper threshold"] = "上阈值"

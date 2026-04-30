@@ -26,7 +26,7 @@ L["Slot count"] = "Nombre d'emplacements"
 L["Sort mode"] = "Mode de tri"
 L["Fixed"] = "Fixe"
 L["By remaining time"] = "Par temps restant"
-L["Fixed keeps each slot at its assigned position. By remaining time sorts active slots so the longest is closest to the icon side."] = "Fixe : chaque emplacement reste à sa position assignée. Par temps restant : trie les emplacements actifs de sorte que le plus long soit le plus proche de l'icône."
+L["FIXED_DESC"] = "Fixe : chaque emplacement reste à sa position assignée.\nPar temps restant : trie les emplacements actifs, le plus long le plus proche de l'icône."
 
 L["Reset position"] = "Réinitialiser la position"
 
@@ -46,7 +46,7 @@ L["Timer text format"] = "Format du texte"
 L["Auto"] = "Auto"
 L["Seconds only"] = "Secondes uniquement"
 L["MM:SS"] = "MM:SS"
-L["Auto: m:ss above 60s, s.s under 10s, integer seconds in between. Seconds only: always integer seconds. MM:SS: always m:ss."] = "Auto : m:ss au-dessus de 60s, s.s en dessous de 10s, secondes entières entre les deux. Secondes uniquement : toujours en secondes entières. MM:SS : toujours en m:ss."
+L["TIMER_FORMAT_DESC"] = "Auto : m:ss au-dessus de 60s, s.s en dessous de 10s, secondes entières entre les deux.\nSecondes uniquement : toujours en secondes entières.\nMM:SS : toujours en m:ss."
 
 L["Thresholds"] = "Seuils"
 L["Upper threshold"] = "Seuil supérieur"

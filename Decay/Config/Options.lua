@@ -116,7 +116,7 @@ local function buildBarArgs(bc)
     sortMode = {
       type = "select",
       name = L["Sort mode"],
-      desc = L["Fixed keeps each slot at its assigned position. By remaining time sorts active slots so the longest is closest to the icon side."],
+      desc = L["FIXED_DESC"],
       order = 5,
       values = function()
         return { fixed = L["Fixed"], byRemaining = L["By remaining time"] }
@@ -172,7 +172,7 @@ local function buildBarArgs(bc)
     },
     timerTextFormat = {
       type = "select", name = L["Timer text format"], order = 23,
-      desc = L["Auto: m:ss above 60s, s.s under 10s, integer seconds in between. Seconds only: always integer seconds. MM:SS: always m:ss."],
+      desc = L["TIMER_FORMAT_DESC"],
       values = function() return TIMER_FORMATS end,
       get = visualGetter(bc, "timerTextFormat"),
       set = visualSetter(bc, "timerTextFormat"),
