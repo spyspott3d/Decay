@@ -27,7 +27,6 @@ L["Sort mode"] = "排序模式"
 L["Fixed"] = "固定"
 L["By remaining time"] = "按剩余时间"
 
-L["Position"] = "位置"
 L["Reset position"] = "重置位置"
 
 L["Visual"] = "外观"
@@ -55,9 +54,6 @@ L["High color"] = "高颜色"
 L["Mid color"] = "中颜色"
 L["Low color"] = "低颜色"
 
-L["Default visual settings"] = "默认外观设置"
-L["These apply to bars that have not overridden them."] = "适用于未覆盖此设置的条。"
-
 L["Visibility rules"] = "可见性规则"
 L["Combat only"] = "仅战斗中"
 L["Hide bars when out of combat"] = "战斗外隐藏条"
@@ -79,5 +75,4 @@ L["Edit aura name"] = "编辑光环名称"
 L["Aura name to match:"] = "要匹配的光环名称:"
 
 L["Unknown command: %s"] = "未知命令: %s"
-L["Reset is not yet implemented"] = "重置尚未实现"
 L["Logs are not yet implemented"] = "日志尚未实现"

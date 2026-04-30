@@ -27,7 +27,6 @@ L["Sort mode"] = true
 L["Fixed"] = true
 L["By remaining time"] = true
 
-L["Position"] = true
 L["Reset position"] = true
 
 L["Visual"] = true
@@ -55,9 +54,6 @@ L["High color"] = true
 L["Mid color"] = true
 L["Low color"] = true
 
-L["Default visual settings"] = true
-L["These apply to bars that have not overridden them."] = true
-
 L["Visibility rules"] = true
 L["Combat only"] = true
 L["Hide bars when out of combat"] = true
@@ -79,5 +75,4 @@ L["Edit aura name"] = true
 L["Aura name to match:"] = true
 
 L["Unknown command: %s"] = true
-L["Reset is not yet implemented"] = true
 L["Logs are not yet implemented"] = true

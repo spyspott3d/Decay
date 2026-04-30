@@ -27,7 +27,6 @@ L["Sort mode"] = "Mode de tri"
 L["Fixed"] = "Fixe"
 L["By remaining time"] = "Par temps restant"
 
-L["Position"] = "Position"
 L["Reset position"] = "Réinitialiser la position"
 
 L["Visual"] = "Visuel"
@@ -55,9 +54,6 @@ L["High color"] = "Couleur haute"
 L["Mid color"] = "Couleur moyenne"
 L["Low color"] = "Couleur basse"
 
-L["Default visual settings"] = "Réglages visuels par défaut"
-L["These apply to bars that have not overridden them."] = "S'applique aux barres qui ne les ont pas remplacés."
-
 L["Visibility rules"] = "Règles de visibilité"
 L["Combat only"] = "En combat uniquement"
 L["Hide bars when out of combat"] = "Masquer les barres hors combat"
@@ -79,5 +75,4 @@ L["Edit aura name"] = "Modifier le nom de l'aura"
 L["Aura name to match:"] = "Nom de l'aura à matcher :"
 
 L["Unknown command: %s"] = "Commande inconnue : %s"
-L["Reset is not yet implemented"] = "Réinitialisation pas encore implémentée"
 L["Logs are not yet implemented"] = "Les logs ne sont pas encore implémentés"
