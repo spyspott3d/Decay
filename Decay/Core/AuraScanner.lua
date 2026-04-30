@@ -183,11 +183,27 @@ function AuraScanner:CheckPendingMatches()
 end
 
 local castQueue = {}
+local playerGUID
 
+-- COMBAT_LOG_EVENT_UNFILTERED is fired by the server-side combat log
+-- asynchronously to the player's cast action, so its OnEvent runs
+-- outside the secure call chain that BindEnchant() validates against.
+-- UNIT_SPELLCAST_SUCCEEDED runs inside that chain on 3.3.5a and tainted
+-- BindEnchant when the cast was a weapon enchant (Deadly Poison etc.).
 local castListener = CreateFrame("Frame")
-castListener:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-castListener:SetScript("OnEvent", function(_, _, unit, spellName)
-  if unit ~= "player" or not spellName then return end
+castListener:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+castListener:RegisterEvent("PLAYER_LOGIN")
+castListener:SetScript("OnEvent", function(_, event, ...)
+  if event == "PLAYER_LOGIN" then
+    playerGUID = UnitGUID("player")
+    return
+  end
+  if not playerGUID then return end
+  local _, subEvent, sourceGUID = ...
+  if subEvent ~= "SPELL_CAST_SUCCESS" then return end
+  if sourceGUID ~= playerGUID then return end
+  local spellName = select(10, ...)
+  if not spellName then return end
   castQueue[#castQueue + 1] = { spellName = spellName, time = GetTime() }
 end)
 
