@@ -1,8 +1,8 @@
 # scripts/init-github.ps1
 # One-time bootstrap. Run from the repo root in PowerShell on Windows.
 # Creates the GitHub repo, sets the remote, makes the initial commit, pushes main.
-# Also configures gh CLI as the git credential helper so subsequent pushes from
-# Claude Code work without SSH keys.
+# Also configures gh CLI as the git credential helper so subsequent pushes
+# work without SSH keys.
 #
 # Prereqs:
 #   - git installed (Git for Windows; verify with: git --version)
@@ -86,7 +86,7 @@ Write-Host "[init-github] Adding files and creating initial commit..."
 git add -A
 Assert-LastExitCode "git add"
 
-git commit -m "chore: initial commit (SPEC, architecture, roadmap, CLAUDE.md)"
+git commit -m "chore: initial commit (specs, architecture, roadmap)"
 Assert-LastExitCode "git commit"
 
 # --- create remote repo -------------------------------------------------------
@@ -112,6 +112,6 @@ Write-Host "Default branch: main"
 Write-Host ""
 Write-Host "Next steps:"
 Write-Host "  1. Verify the repo is visible at https://github.com/$RepoOwner/$RepoName"
-Write-Host "  2. Open the repo in Claude Code and start Phase 0."
-Write-Host "  3. After every phase, Claude Code commits and pushes via 'git push origin main'."
+Write-Host "  2. Open the repo in your editor and start Phase 0."
+Write-Host "  3. After every phase, commit and push via 'git push origin main'."
 Write-Host "  4. To cut a release: pwsh scripts/release.ps1 1.0.0"

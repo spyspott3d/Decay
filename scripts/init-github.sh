@@ -51,7 +51,7 @@ git config core.autocrlf input
 
 echo "[init-github] Adding files and creating initial commit..."
 git add -A
-git commit -m "chore: initial commit (SPEC, architecture, roadmap, CLAUDE.md)"
+git commit -m "chore: initial commit (specs, architecture, roadmap)"
 
 # --- create remote repo -------------------------------------------------------
 
@@ -74,6 +74,6 @@ echo "Default branch: main"
 echo ""
 echo "Next steps:"
 echo "  1. Verify the repo is visible at https://github.com/${REPO_OWNER}/${REPO_NAME}"
-echo "  2. Open the repo in Claude Code and start Phase 0."
-echo "  3. After every phase, Claude Code commits and pushes via 'git push origin main'."
+echo "  2. Open the repo in your editor and start Phase 0."
+echo "  3. After every phase, commit and push via 'git push origin main'."
 echo "  4. To cut a release: bash scripts/release.sh 1.0.0"
