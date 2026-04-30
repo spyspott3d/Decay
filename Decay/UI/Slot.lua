@@ -24,7 +24,13 @@ local EMPTY_BAR_COLOR = { 0.3, 0.3, 0.3, 0.4 }
 local THROTTLE = 0.05
 local TIMER_FONT = "Fonts\\FRIZQT__.TTF"
 
-local menuFrame = CreateFrame("Frame", "DecaySlotContextMenu", UIParent, "UIDropDownMenuTemplate")
+local menuFrame
+local function getMenuFrame()
+  if not menuFrame then
+    menuFrame = CreateFrame("Frame", "DecaySlotContextMenu", UIParent, "UIDropDownMenuTemplate")
+  end
+  return menuFrame
+end
 
 local methods = {}
 methods.__index = methods
@@ -368,7 +374,7 @@ local function showContextMenu(slot)
       { text = CANCEL, notCheckable = true, func = function() end },
     }
   end
-  EasyMenu(items, menuFrame, "cursor", 0, 0, "MENU")
+  EasyMenu(items, getMenuFrame(), "cursor", 0, 0, "MENU")
 end
 
 local function slotOnMouseUp(slot, button)
