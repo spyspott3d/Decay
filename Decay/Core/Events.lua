@@ -12,10 +12,14 @@ local CreateFrame = CreateFrame
 -- blocks the prompt from completing. The native dispatcher below has
 -- no Lua-side wrapper, so the secure path stays clean.
 
+-- UNIT_AURA and PLAYER_TARGET_CHANGED are intentionally NOT registered
+-- here. Their handlers ran inside the secure call chain when a cast
+-- applied auras to the player, which tainted BindEnchant() and blocked
+-- weapon-poison application on Ascension. AuraScanner.lua polls the
+-- relevant units via an OnUpdate frame instead - OnUpdate runs at
+-- render time after the secure chain has closed, so no taint propagates.
 local handlers = {
   PLAYER_ENTERING_WORLD = "OnEnterWorld",
-  UNIT_AURA             = "OnUnitAura",
-  PLAYER_TARGET_CHANGED = "OnTargetChanged",
   PLAYER_REGEN_DISABLED = "OnEnterCombat",
   PLAYER_REGEN_ENABLED  = "OnLeaveCombat",
   ZONE_CHANGED_NEW_AREA = "OnZoneChanged",

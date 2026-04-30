@@ -4,8 +4,12 @@ local AuraScanner = Decay.AuraScanner
 
 local UnitAura = UnitAura
 local UnitExists = UnitExists
+local UnitGUID = UnitGUID
+local CreateFrame = CreateFrame
 local ipairs = ipairs
 local pairs = pairs
+
+local POLL_INTERVAL = 0.1
 
 local function slotKey(barId, idx)
   return barId .. ":" .. idx
@@ -72,3 +76,30 @@ function AuraScanner:RescanAll()
   self:ScanUnit("player")
   self:ScanUnit("target")
 end
+
+-- OnUpdate poll replaces UNIT_AURA + PLAYER_TARGET_CHANGED event
+-- registration. Running at render time keeps our scan code out of the
+-- secure call chain that BindEnchant() validates against, so applying
+-- weapon poisons on Ascension is no longer blocked. 100ms latency is
+-- well below the visible threshold for a regression bar.
+local pollFrame = CreateFrame("Frame", "DecayPollFrame")
+pollFrame.elapsed = 0
+pollFrame.lastTargetGUID = nil
+
+pollFrame:SetScript("OnUpdate", function(self, elapsed)
+  if Decay.runtimeHalted then return end
+  self.elapsed = self.elapsed + elapsed
+  if self.elapsed < POLL_INTERVAL then return end
+  self.elapsed = 0
+  if not Decay.db then return end
+
+  AuraScanner:ScanUnit("player")
+
+  local guid = UnitGUID("target")
+  if guid ~= self.lastTargetGUID then
+    self.lastTargetGUID = guid
+  end
+  AuraScanner:ScanUnit("target")
+end)
+
+AuraScanner.pollFrame = pollFrame
