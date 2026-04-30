@@ -182,9 +182,43 @@ function AuraScanner:CheckPendingMatches()
   end
 end
 
+local castQueue = {}
+
+function AuraScanner:QueuePlayerCast(spellName, timestamp)
+  castQueue[#castQueue + 1] = { spellName = spellName, time = timestamp }
+end
+
+local function drainCastQueue()
+  if #castQueue == 0 then return end
+  local items = castQueue
+  castQueue = {}
+  local snapshots
+  for _, cast in ipairs(items) do
+    for _, bar in ipairs(Decay.db.global.bars) do
+      if bar.slots then
+        for slotIdx, slotCfg in pairs(bar.slots) do
+          if slotCfg.spellName == cast.spellName then
+            if not snapshots then snapshots = AuraScanner:CaptureSnapshots() end
+            local key = slotKey(bar.id, slotIdx)
+            Decay.State.pendingMatch[key] = {
+              startTime = cast.time,
+              expectedAuraName = slotCfg.auraName,
+              auraType = slotCfg.auraType,
+              spellName = cast.spellName,
+              castSnapshots = snapshots,
+              observedNew = {},
+            }
+          end
+        end
+      end
+    end
+  end
+end
+
 local watchFrame = CreateFrame("Frame")
 watchFrame.elapsed = 0
 watchFrame:SetScript("OnUpdate", function(self, elapsed)
+  if #castQueue > 0 then drainCastQueue() end
   self.elapsed = self.elapsed + elapsed
   if self.elapsed < WATCH_TICK then return end
   self.elapsed = 0

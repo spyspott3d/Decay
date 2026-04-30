@@ -50,25 +50,10 @@ end
 
 function Decay:OnSpellCastSucceeded(_, unit, spellName)
   if unit ~= "player" or not spellName then return end
-  local snapshots
-  for _, bar in ipairs(self.db.global.bars) do
-    if bar.slots then
-      for slotIdx, slotCfg in pairs(bar.slots) do
-        if slotCfg.spellName == spellName then
-          if not snapshots then snapshots = self.AuraScanner:CaptureSnapshots() end
-          local key = bar.id .. ":" .. slotIdx
-          self.State.pendingMatch[key] = {
-            startTime = GetTime(),
-            expectedAuraName = slotCfg.auraName,
-            auraType = slotCfg.auraType,
-            spellName = spellName,
-            castSnapshots = snapshots,
-            observedNew = {},
-          }
-        end
-      end
-    end
-  end
+  -- Defer work out of the secure event call chain to avoid tainting
+  -- secure functions like BindEnchant() when the cast triggers a
+  -- weapon enchant prompt (e.g. Deadly Poison).
+  self.AuraScanner:QueuePlayerCast(spellName, GetTime())
 end
 
 function Decay:ResetAll()
