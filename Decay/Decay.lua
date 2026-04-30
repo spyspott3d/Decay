@@ -1,4 +1,4 @@
-local Decay = LibStub("AceAddon-3.0"):NewAddon("Decay", "AceEvent-3.0", "AceConsole-3.0")
+local Decay = LibStub("AceAddon-3.0"):NewAddon("Decay", "AceConsole-3.0")
 _G.Decay = Decay
 
 Decay.VERSION = "1.0.0"
