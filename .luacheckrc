@@ -2,6 +2,7 @@ std = "lua51+playerwow"
 
 exclude_files = {
   "Decay/Libs/",
+  "Decay_Options/Libs/",
 }
 
 stds.playerwow = {
@@ -16,7 +17,7 @@ stds.playerwow = {
     "PickupSpell", "ClearCursor", "CursorHasSpell", "GetCursorInfo",
     "CreateFrame", "InCombatLockdown", "GetLocale", "IsInInstance",
     "IsShiftKeyDown", "IsControlKeyDown", "IsAltKeyDown",
-    "EasyMenu", "StaticPopup_Show",
+    "EasyMenu", "StaticPopup_Show", "LoadAddOn",
     "UIParent", "GameTooltip", "ACCEPT", "CANCEL",
     "PLAYER_LOGIN", "UNIT_AURA",
     "string", "table", "math", "tostring", "tonumber",

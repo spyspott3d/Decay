@@ -337,3 +337,9 @@ end
 function Options:Refresh()
   LibStub("AceConfigRegistry-3.0"):NotifyChange(APP)
 end
+
+-- Decay_Options is LoadOnDemand: this file runs only when the user
+-- (via Decay.lua's slash command) calls LoadAddOn("Decay_Options").
+-- The libs in embeds.xml have already loaded above, so we self-init
+-- right away instead of waiting for Decay's OnInitialize.
+Options:Init()

@@ -39,4 +39,3 @@ UI\DragDrop.lua
 UI\Lock.lua
 
 Config\Heuristics.lua
-Config\Options.lua

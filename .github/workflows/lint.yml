@@ -6,11 +6,13 @@ on:
       - main
     paths:
       - "Decay/**/*.lua"
+      - "Decay_Options/**/*.lua"
       - ".luacheckrc"
       - ".github/workflows/lint.yml"
   pull_request:
     paths:
       - "Decay/**/*.lua"
+      - "Decay_Options/**/*.lua"
       - ".luacheckrc"
       - ".github/workflows/lint.yml"
   workflow_dispatch:
@@ -31,8 +33,8 @@ jobs:
       - name: Run luacheck
         run: |
           if [ -f .luacheckrc ]; then
-            luacheck Decay --config .luacheckrc
+            luacheck Decay Decay_Options --config .luacheckrc
           else
             echo ".luacheckrc not found, running with defaults"
-            luacheck Decay
+            luacheck Decay Decay_Options
           fi

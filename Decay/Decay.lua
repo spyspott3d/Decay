@@ -8,10 +8,21 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Decay")
 function Decay:OnInitialize()
   self.Database:Init()
   self.UI.BarManager:RestoreAll()
-  self.Config.Options:Init()
 
   self:RegisterChatCommand("decay", "OnSlashCommand")
   self:RegisterChatCommand("dc", "OnSlashCommand")
+end
+
+local function ensureOptionsLoaded()
+  if Decay.Config and Decay.Config.Options and Decay.Config.Options.dialog then
+    return true
+  end
+  local loaded, reason = LoadAddOn("Decay_Options")
+  if not loaded then
+    Decay:Print("Decay_Options failed to load: " .. tostring(reason))
+    return false
+  end
+  return Decay.Config and Decay.Config.Options and Decay.Config.Options.dialog ~= nil
 end
 
 function Decay:OnEnable()
@@ -57,13 +68,17 @@ function Decay:ResetAll()
   self.UI.BarManager.bars = {}
   self.State:Reset()
   self.UI.BarManager:RestoreAll()
-  self.Config.Options:Refresh()
+  if self.Config and self.Config.Options and self.Config.Options.Refresh then
+    self.Config.Options:Refresh()
+  end
 end
 
 function Decay:OnSlashCommand(input)
   input = input and input:lower():match("^%s*(.-)%s*$") or ""
   if input == "" then
-    self.Config.Options:Toggle()
+    if ensureOptionsLoaded() then
+      self.Config.Options:Toggle()
+    end
   elseif input == "lock" then
     self.UI.Lock:Set(false)
   elseif input == "unlock" then
