@@ -32,6 +32,7 @@ local function defaultBarConfig(index)
     orientation = "horizontal",
     fadeDirection = "above",
     slotCount = 4,
+    slots = {},
     position = {
       point = "CENTER",
       relativeTo = "UIParent",

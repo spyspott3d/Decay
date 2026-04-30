@@ -14,6 +14,7 @@ local ICON_SIZE = 32
 local BAR_LENGTH = 100
 local BAR_THICKNESS = 32
 local SPACING = 4
+local HANDLE_SIZE = 12
 
 local methods = {}
 methods.__index = methods
@@ -26,6 +27,10 @@ end
 
 function methods:ApplyLockState(unlocked)
   self.frame:EnableMouse(unlocked)
+  for _, slot in ipairs(self.slots) do
+    slot:ApplyLockState(unlocked)
+  end
+  self.handle:SetShown(unlocked)
   if unlocked then
     self.frame:SetFrameStrata("FULLSCREEN_DIALOG")
     self.frame:SetFrameLevel(200)
@@ -83,6 +88,9 @@ function methods:UpdateLayout()
   self:CreateSlots()
   self:LayoutSlots()
   self:Resize()
+  for i = 1, self.config.slotCount do
+    self.slots[i]:RefreshDisplay()
+  end
 end
 
 function methods:Destroy()
@@ -96,12 +104,45 @@ function methods:Destroy()
   self.frame:SetScript("OnDragStop", nil)
   self.frame:SetParent(nil)
   self.frame = nil
+  self.handle = nil
 end
 
 local function applyDefaults(barConfig)
   barConfig.orientation = barConfig.orientation or "horizontal"
   barConfig.fadeDirection = barConfig.fadeDirection or "above"
   barConfig.slotCount = barConfig.slotCount or 4
+  barConfig.slots = barConfig.slots or {}
+end
+
+local function savePosition(frame, barConfig)
+  local point, _, relativePoint, x, y = frame:GetPoint(1)
+  barConfig.position.point = point
+  barConfig.position.relativeTo = "UIParent"
+  barConfig.position.relativePoint = relativePoint
+  barConfig.position.x = x
+  barConfig.position.y = y
+end
+
+local function createDragHandle(parent, barConfig)
+  local handle = CreateFrame("Frame", nil, parent)
+  handle:SetSize(HANDLE_SIZE, HANDLE_SIZE)
+  handle:SetPoint("BOTTOMRIGHT", parent, "TOPLEFT", -2, 2)
+
+  local tex = handle:CreateTexture(nil, "OVERLAY")
+  tex:SetAllPoints()
+  tex:SetTexture("Interface\\Buttons\\WHITE8X8")
+  tex:SetVertexColor(1, 0.82, 0, 0.85)
+
+  handle:EnableMouse(true)
+  handle:SetMovable(true)
+  handle:RegisterForDrag("LeftButton")
+  handle:SetScript("OnDragStart", function() parent:StartMoving() end)
+  handle:SetScript("OnDragStop", function()
+    parent:StopMovingOrSizing()
+    savePosition(parent, barConfig)
+  end)
+  handle:Hide()
+  return handle
 end
 
 function Bar.New(barConfig)
@@ -119,16 +160,14 @@ function Bar.New(barConfig)
   end)
   frame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
-    local point, _, relativePoint, x, y = self:GetPoint(1)
-    barConfig.position.point = point
-    barConfig.position.relativeTo = "UIParent"
-    barConfig.position.relativePoint = relativePoint
-    barConfig.position.x = x
-    barConfig.position.y = y
+    savePosition(self, barConfig)
   end)
+
+  local handle = createDragHandle(frame, barConfig)
 
   local widget = setmetatable({
     frame = frame,
+    handle = handle,
     config = barConfig,
     slots = {},
   }, methods)

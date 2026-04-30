@@ -19,6 +19,13 @@ L["Left"] = true
 L["Right"] = true
 L["Slot count"] = true
 
+L["Clear"] = true
+L["Set as buff"] = true
+L["Set as debuff"] = true
+L["Move slot"] = true
+L["Manual entry"] = true
+L["Aura name to track:"] = true
+
 L["Unknown command: %s"] = true
 L["Reset is not yet implemented"] = true
 L["Logs are not yet implemented"] = true

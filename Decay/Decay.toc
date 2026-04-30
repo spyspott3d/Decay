@@ -18,19 +18,22 @@ Locale\frFR.lua
 Locale\deDE.lua
 Locale\esES.lua
 Locale\zhCN.lua
+
+Decay.lua
+
 Locale\heuristics\enUS.lua
 Locale\heuristics\frFR.lua
 Locale\heuristics\deDE.lua
 Locale\heuristics\esES.lua
 Locale\heuristics\zhCN.lua
 
-Decay.lua
-
 Core\Database.lua
 
 UI\Slot.lua
 UI\Bar.lua
 UI\BarManager.lua
+UI\DragDrop.lua
 UI\Lock.lua
 
+Config\Heuristics.lua
 Config\Options.lua
