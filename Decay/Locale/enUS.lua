@@ -48,12 +48,12 @@ L["Seconds only"] = true
 L["MM:SS"] = true
 
 L["Thresholds"] = true
-L["Yellow threshold"] = true
-L["Red threshold"] = true
+L["Upper threshold"] = true
+L["Lower threshold"] = true
 L["Colors"] = true
-L["Green color"] = true
-L["Yellow color"] = true
-L["Red color"] = true
+L["High color"] = true
+L["Mid color"] = true
+L["Low color"] = true
 
 L["Default visual settings"] = true
 L["These apply to bars that have not overridden them."] = true

@@ -246,7 +246,7 @@ local function buildDisplayTabArgs()
   return {
     thresholdsHeader = { type = "header", name = L["Thresholds"], order = 1 },
     yellowThreshold = {
-      type = "range", name = L["Yellow threshold"], order = 2,
+      type = "range", name = L["Upper threshold"], order = 2,
       min = 0.05, max = 0.95, step = 0.01, isPercent = true,
       get = function() return Decay.db.global.settings.thresholds.yellow end,
       set = function(_, val)
@@ -257,7 +257,7 @@ local function buildDisplayTabArgs()
       end,
     },
     redThreshold = {
-      type = "range", name = L["Red threshold"], order = 3,
+      type = "range", name = L["Lower threshold"], order = 3,
       min = 0.01, max = 0.9, step = 0.01, isPercent = true,
       get = function() return Decay.db.global.settings.thresholds.red end,
       set = function(_, val)
@@ -269,17 +269,17 @@ local function buildDisplayTabArgs()
     },
     colorsHeader = { type = "header", name = L["Colors"], order = 10 },
     greenColor = {
-      type = "color", name = L["Green color"], order = 11, hasAlpha = true,
+      type = "color", name = L["High color"], order = 11, hasAlpha = true,
       get = function() return colorGet("green") end,
       set = function(_, r, g, b, a) colorSet("green", r, g, b, a) end,
     },
     yellowColor = {
-      type = "color", name = L["Yellow color"], order = 12, hasAlpha = true,
+      type = "color", name = L["Mid color"], order = 12, hasAlpha = true,
       get = function() return colorGet("yellow") end,
       set = function(_, r, g, b, a) colorSet("yellow", r, g, b, a) end,
     },
     redColor = {
-      type = "color", name = L["Red color"], order = 13, hasAlpha = true,
+      type = "color", name = L["Low color"], order = 13, hasAlpha = true,
       get = function() return colorGet("red") end,
       set = function(_, r, g, b, a) colorSet("red", r, g, b, a) end,
     },
