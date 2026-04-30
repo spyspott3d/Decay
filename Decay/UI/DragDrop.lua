@@ -105,3 +105,43 @@ function DragDrop:OpenManualEntry(slot)
   pendingManualSlot = slot
   StaticPopup_Show("DECAY_MANUAL_ENTRY")
 end
+
+local pendingEditSlot = nil
+
+StaticPopupDialogs["DECAY_EDIT_AURA_NAME"] = {
+  text = L["Aura name to match:"],
+  button1 = ACCEPT,
+  button2 = CANCEL,
+  hasEditBox = true,
+  maxLetters = 64,
+  OnShow = function(self)
+    local slot = pendingEditSlot
+    local cfg = slot and slot:GetConfig()
+    if cfg then self.editBox:SetText(cfg.auraName or "") end
+    self.editBox:HighlightText()
+    self.editBox:SetFocus()
+  end,
+  OnAccept = function(self)
+    local name = self.editBox:GetText()
+    local slot = pendingEditSlot
+    pendingEditSlot = nil
+    if not slot or not slot.frame then return end
+    if not name or name == "" then return end
+    slot:SetAuraName(name)
+  end,
+  OnCancel = function() pendingEditSlot = nil end,
+  EditBoxOnEnterPressed = function(self)
+    self:GetParent().button1:Click()
+  end,
+  EditBoxOnEscapePressed = function(self)
+    self:GetParent():Hide()
+  end,
+  timeout = 0,
+  whileDead = true,
+  hideOnEscape = true,
+}
+
+function DragDrop:OpenAuraNameEdit(slot)
+  pendingEditSlot = slot
+  StaticPopup_Show("DECAY_EDIT_AURA_NAME")
+end
