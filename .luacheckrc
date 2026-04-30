@@ -1,5 +1,9 @@
 std = "lua51+playerwow"
 
+exclude_files = {
+  "Decay/Libs/",
+}
+
 stds.playerwow = {
   globals = {
     "Decay", "DecayDB", "L",
