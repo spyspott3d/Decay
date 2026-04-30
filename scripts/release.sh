@@ -68,8 +68,12 @@ fi
 
 # --- commit and tag -----------------------------------------------------------
 
-git add "${TOC}"
-git commit -m "release: ${VERSION}"
+if git diff --quiet -- "${TOC}"; then
+  echo "[release] ${TOC} already at version ${VERSION}, skipping bump commit."
+else
+  git add "${TOC}"
+  git commit -m "release: ${VERSION}"
+fi
 git tag -a "${TAG}" -m "Release ${VERSION}"
 
 # --- push ---------------------------------------------------------------------

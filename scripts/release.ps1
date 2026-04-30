@@ -78,11 +78,19 @@ if (-not (Select-String -Path $Toc -Pattern "^## Version: $([regex]::Escape($Ver
 
 # --- commit and tag -----------------------------------------------------------
 
-git add $Toc
-Assert-LastExitCode "git add"
+git diff --quiet -- $Toc
+$tocChanged = ($LASTEXITCODE -ne 0)
+$global:LASTEXITCODE = 0
 
-git commit -m "release: $Version"
-Assert-LastExitCode "git commit"
+if ($tocChanged) {
+    git add $Toc
+    Assert-LastExitCode "git add"
+
+    git commit -m "release: $Version"
+    Assert-LastExitCode "git commit"
+} else {
+    Write-Host "[release] $Toc already at version $Version, skipping bump commit."
+}
 
 git tag -a $Tag -m "Release $Version"
 Assert-LastExitCode "git tag"
