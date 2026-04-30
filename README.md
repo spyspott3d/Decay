@@ -28,10 +28,6 @@ V1.
 - Drag a spell from your spellbook onto an empty slot to track it. Right-click an armed slot for Clear / Set as buff / Set as debuff / Edit aura name / Move slot.
 - Shift-click an empty slot in unlock mode to type an aura name manually (useful when the cast spell name and the applied aura name differ).
 
-## Known limitation on Ascension
-
-Applying a weapon enchant (poison, sharpening stone, etc.) to a non-soulbound weapon may show "AddOn 'Decay' tainted the call of the secure function 'BindEnchant()'" and block the prompt. This is a side effect of Ascension's particularly strict secure-function validator interacting with any addon that polls auras; the `/decay halt` slash command stops Decay's runtime in-place without a /reload as a quick workaround. Reload to resume.
-
 ## Compatibility
 
 Tested on Ascension launcher. Should work on any 3.3.5a client (Warmane, Atlantiss, Tauri, custom Trinity-based servers). Not compatible with retail WoW or Classic Era. Interface version: 30300.
