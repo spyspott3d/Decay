@@ -1,0 +1,27 @@
+## Interface: 30300
+## Title: Decay
+## Notes: Self-buff and target-debuff tracker. Drag spells from the spellbook into bars.
+## Notes-frFR: Suivi des buffs personnels et debuffs sur cible. Glisse des sorts du livre dans des barres.
+## Notes-deDE: Eigenbuff- und Ziel-Debuff-Tracker.
+## Notes-esES: Seguidor de buffs propios y debuffs en el objetivo.
+## Notes-zhCN: 自身增益和目标减益的追踪器。
+## Author: spyspott3d
+## Version: 1.0.0
+## SavedVariables: DecayDB
+## OptionalDeps: Ace3
+## DefaultState: enabled
+
+embeds.xml
+
+Locale\enUS.lua
+Locale\frFR.lua
+Locale\deDE.lua
+Locale\esES.lua
+Locale\zhCN.lua
+Locale\heuristics\enUS.lua
+Locale\heuristics\frFR.lua
+Locale\heuristics\deDE.lua
+Locale\heuristics\esES.lua
+Locale\heuristics\zhCN.lua
+
+Decay.lua

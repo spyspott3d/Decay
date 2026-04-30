@@ -1,0 +1,27 @@
+# Build artifacts
+*.zip
+*.tar.gz
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Lua leftovers
+*.luac
+
+# Logs and temp
+*.log
+*.bak
+*.tmp
+release-notes.md
+
+# Backups
+*.orig

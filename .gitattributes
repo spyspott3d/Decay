@@ -1,0 +1,31 @@
+# Default: auto-detect text vs binary, normalize line endings to LF in repo
+* text=auto eol=lf
+
+# Lua source: always LF (WoW client reads them on Windows but no CRLF needed)
+*.lua text eol=lf
+
+# Shell scripts: always LF (CRLF breaks them on Linux/macOS, including in CI)
+*.sh text eol=lf
+package.sh text eol=lf
+
+# YAML, Markdown, TOML, plain text: LF
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.toml text eol=lf
+
+# WoW addon files: LF
+*.toc text eol=lf
+*.xml text eol=lf
+
+# Binary files: never touch
+*.zip binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.tga binary
+*.blp binary
+*.mp3 binary
+*.ogg binary
