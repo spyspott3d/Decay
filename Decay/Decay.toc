@@ -4,7 +4,7 @@
 ## Notes-frFR: Suivi des buffs personnels et debuffs sur cible. Glisse des sorts du livre dans des barres.
 ## Notes-deDE: Eigenbuff- und Ziel-Debuff-Tracker.
 ## Notes-esES: Seguidor de buffs propios y debuffs en el objetivo.
-## Notes-zhCN: 自身增益和目标减益的追踪器。
+## Notes-zhCN: è‡ªèº«å¢žç›Šå’Œç›®æ ‡å‡ç›Šçš„è¿½è¸ªå™¨ã€‚
 ## Author: spyspott3d
 ## Version: 1.0.0
 ## SavedVariables: DecayDB
