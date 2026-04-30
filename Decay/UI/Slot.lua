@@ -117,16 +117,21 @@ local function showContextMenu(slot)
   local items
   if cfg then
     items = {
-      { text = L["Clear"],          notCheckable = true, func = function() slot:Clear() end },
-      { text = L["Set as buff"],    checked = cfg.auraType == "buff",   func = function() slot:SetAuraType("buff") end },
-      { text = L["Set as debuff"],  checked = cfg.auraType == "debuff", func = function() slot:SetAuraType("debuff") end },
-      { text = L["Move slot"],      notCheckable = true, func = function() Decay.UI.DragDrop:PickupSlot(slot) end },
-      { text = CANCEL,              notCheckable = true, func = function() end },
+      { text = L["Clear"], notCheckable = true,
+        func = function() slot:Clear() end },
+      { text = L["Set as buff"], checked = cfg.auraType == "buff",
+        func = function() slot:SetAuraType("buff") end },
+      { text = L["Set as debuff"], checked = cfg.auraType == "debuff",
+        func = function() slot:SetAuraType("debuff") end },
+      { text = L["Move slot"], notCheckable = true,
+        func = function() Decay.UI.DragDrop:PickupSlot(slot) end },
+      { text = CANCEL, notCheckable = true, func = function() end },
     }
   else
     items = {
-      { text = L["Manual entry"],   notCheckable = true, func = function() Decay.UI.DragDrop:OpenManualEntry(slot) end },
-      { text = CANCEL,              notCheckable = true, func = function() end },
+      { text = L["Manual entry"], notCheckable = true,
+        func = function() Decay.UI.DragDrop:OpenManualEntry(slot) end },
+      { text = CANCEL, notCheckable = true, func = function() end },
     }
   end
   EasyMenu(items, menuFrame, "cursor", 0, 0, "MENU")
