@@ -28,6 +28,9 @@ Locale\heuristics\esES.lua
 Locale\heuristics\zhCN.lua
 
 Core\Database.lua
+Core\State.lua
+Core\AuraScanner.lua
+Core\Events.lua
 
 UI\Slot.lua
 UI\Bar.lua

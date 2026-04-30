@@ -8,6 +8,17 @@ local defaults = {
     state = {
       unlocked = false,
     },
+    settings = {
+      thresholds = {
+        yellow = 0.5,
+        red = 0.25,
+      },
+      colors = {
+        green  = { 0.247, 0.749, 0.247, 1.0 },
+        yellow = { 0.898, 0.753, 0.235, 1.0 },
+        red    = { 0.816, 0.251, 0.251, 1.0 },
+      },
+    },
   },
 }
 

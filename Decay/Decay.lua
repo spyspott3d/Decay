@@ -15,6 +15,30 @@ function Decay:OnInitialize()
 end
 
 function Decay:OnEnable()
+  self.Events:RegisterAll()
+end
+
+function Decay:OnEnterWorld()
+  self.State:Reset()
+  self.AuraScanner:InitialScan()
+end
+
+function Decay:OnUnitAura(_, unit)
+  if unit == "player" or unit == "target" then
+    self.AuraScanner:ScanUnit(unit)
+  end
+end
+
+function Decay:OnTargetChanged()
+  self.AuraScanner:ScanUnit("target")
+end
+
+function Decay:OnEnterCombat()
+  self.State.inCombat = true
+end
+
+function Decay:OnLeaveCombat()
+  self.State.inCombat = false
 end
 
 function Decay:OnSlashCommand(input)

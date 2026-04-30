@@ -10,18 +10,27 @@ local UIParent = UIParent
 local IsShiftKeyDown = IsShiftKeyDown
 local CursorHasSpell = CursorHasSpell
 local EasyMenu = EasyMenu
+local GetTime = GetTime
+local floor = math.floor
 local max = math.max
+local unpack = unpack
+local tostring = tostring
 
 local SLOT_FRAME_PREFIX = "DecaySlotFrame"
 local PLACEHOLDER_ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
 local DEFAULT_BAR_TEXTURE = "Interface\\TargetingFrame\\UI-StatusBar"
-local ARMED_COLOR = { 0.247, 0.749, 0.247, 1.0 }
-local EMPTY_COLOR = { 0.4, 0.4, 0.4, 0.6 }
+local INACTIVE_BAR_COLOR = { 0.4, 0.4, 0.4, 0.6 }
+local EMPTY_BAR_COLOR = { 0.3, 0.3, 0.3, 0.4 }
+local THROTTLE = 0.05
 
 local menuFrame = CreateFrame("Frame", "DecaySlotContextMenu", UIParent, "UIDropDownMenuTemplate")
 
 local methods = {}
 methods.__index = methods
+
+function methods:Key()
+  return self.barWidget.config.id .. ":" .. self.index
+end
 
 function methods:GetConfig()
   local slots = self.barWidget.config.slots
@@ -39,17 +48,29 @@ function methods:Assign(spellName, spellID, icon)
     auraType = Decay.Heuristics:ClassifySpell(spellID),
   }
   self:RefreshDisplay()
+  self:UpdateVisibility()
+  Decay.AuraScanner:ScanUnit(bc.slots[self.index].auraType == "buff" and "player" or "target")
 end
 
 function methods:Clear()
+  local key = self:Key()
+  Decay.State.activeSlots[key] = nil
   local slots = self.barWidget.config.slots
   if slots then slots[self.index] = nil end
+  self.frame:SetScript("OnUpdate", nil)
   self:RefreshDisplay()
+  self:UpdateVisibility()
 end
 
 function methods:SetAuraType(t)
   local cfg = self:GetConfig()
-  if cfg then cfg.auraType = t end
+  if not cfg then return end
+  cfg.auraType = t
+  Decay.State.activeSlots[self:Key()] = nil
+  self.frame:SetScript("OnUpdate", nil)
+  self:RefreshDisplay()
+  self:UpdateVisibility()
+  Decay.AuraScanner:ScanUnit(t == "buff" and "player" or "target")
 end
 
 function methods:RefreshDisplay()
@@ -57,16 +78,118 @@ function methods:RefreshDisplay()
   if cfg then
     self.icon:SetTexture(cfg.auraIcon or PLACEHOLDER_ICON)
     self.icon:SetVertexColor(1, 1, 1, 1)
-    self.bar:SetStatusBarColor(ARMED_COLOR[1], ARMED_COLOR[2], ARMED_COLOR[3], ARMED_COLOR[4])
+    self.bar:SetValue(0)
+    self.bar:SetStatusBarColor(unpack(INACTIVE_BAR_COLOR))
+    self.text:SetText("")
   else
     self.icon:SetTexture(PLACEHOLDER_ICON)
     self.icon:SetVertexColor(0.5, 0.5, 0.5, 0.7)
-    self.bar:SetStatusBarColor(EMPTY_COLOR[1], EMPTY_COLOR[2], EMPTY_COLOR[3], EMPTY_COLOR[4])
+    self.bar:SetValue(0)
+    self.bar:SetStatusBarColor(unpack(EMPTY_BAR_COLOR))
+    self.text:SetText("")
+  end
+  self.stackText:Hide()
+end
+
+function methods:RefreshActiveDisplay()
+  local data = Decay.State.activeSlots[self:Key()]
+  local cfg = self:GetConfig()
+  if not data or not cfg then return end
+
+  self.icon:SetTexture(data.auraIcon or cfg.auraIcon or PLACEHOLDER_ICON)
+  self.icon:SetVertexColor(1, 1, 1, 1)
+
+  if data.stackCount and data.stackCount > 1 then
+    self.stackText:SetText(tostring(data.stackCount))
+    self.stackText:Show()
+  else
+    self.stackText:Hide()
+  end
+end
+
+local function slotOnUpdate(frame, elapsed)
+  local widget = frame.decSlotWidget
+  if not widget then
+    frame:SetScript("OnUpdate", nil)
+    return
+  end
+
+  widget.elapsed = (widget.elapsed or 0) + elapsed
+  if widget.elapsed < THROTTLE then return end
+  widget.elapsed = 0
+
+  local data = Decay.State.activeSlots[widget:Key()]
+  if not data then
+    frame:SetScript("OnUpdate", nil)
+    widget:UpdateVisibility()
+    return
+  end
+
+  local settings = Decay.db.global.settings
+  local colors = settings.colors
+
+  if data.duration == 0 then
+    widget.bar:SetValue(1)
+    widget.bar:SetStatusBarColor(unpack(colors.green))
+    widget.text:SetText("∞")
+    return
+  end
+
+  local remaining = data.expirationTime - GetTime()
+  if remaining <= 0 then
+    Decay.State.activeSlots[widget:Key()] = nil
+    frame:SetScript("OnUpdate", nil)
+    widget:Deactivate()
+    return
+  end
+
+  local pct = remaining / data.duration
+  widget.bar:SetValue(pct)
+
+  local thresholds = settings.thresholds
+  if pct >= thresholds.yellow then
+    widget.bar:SetStatusBarColor(unpack(colors.green))
+  elseif pct >= thresholds.red then
+    widget.bar:SetStatusBarColor(unpack(colors.yellow))
+  else
+    widget.bar:SetStatusBarColor(unpack(colors.red))
+  end
+
+  if remaining >= 60 then
+    widget.text:SetFormattedText("%d:%02d", floor(remaining/60), floor(remaining%60))
+  elseif remaining >= 10 then
+    widget.text:SetFormattedText("%d", remaining)
+  else
+    widget.text:SetFormattedText("%.1f", remaining)
+  end
+end
+
+function methods:Activate()
+  self:RefreshActiveDisplay()
+  self:UpdateVisibility()
+  self.elapsed = 0
+  self.frame:SetScript("OnUpdate", slotOnUpdate)
+end
+
+function methods:Deactivate()
+  self.frame:SetScript("OnUpdate", nil)
+  self:RefreshDisplay()
+  self:UpdateVisibility()
+end
+
+function methods:UpdateVisibility()
+  local active = Decay.State.activeSlots[self:Key()]
+  local unlocked = Decay.db.global.state.unlocked
+  if active or unlocked then
+    self.frame:Show()
+  else
+    self.frame:Hide()
   end
 end
 
 function methods:ApplyLockState(unlocked)
   self.frame:EnableMouse(unlocked)
+  self:UpdateVisibility()
 end
 
 function methods:Layout(orientation, fadeDirection, iconSize, barLength, barThickness)
@@ -78,6 +201,7 @@ function methods:Layout(orientation, fadeDirection, iconSize, barLength, barThic
     self.frame:SetSize(max(iconSize, barThickness), iconSize + barLength)
     self.bar:SetSize(barThickness, barLength)
     self.bar:SetOrientation("VERTICAL")
+    self.bar:SetReverseFill(fadeDirection == "below")
     if fadeDirection == "below" then
       self.icon:SetPoint("TOP", self.frame, "TOP")
       self.bar:SetPoint("TOP", self.icon, "BOTTOM")
@@ -89,6 +213,7 @@ function methods:Layout(orientation, fadeDirection, iconSize, barLength, barThic
     self.frame:SetSize(iconSize + barLength, max(iconSize, barThickness))
     self.bar:SetSize(barLength, barThickness)
     self.bar:SetOrientation("HORIZONTAL")
+    self.bar:SetReverseFill(fadeDirection == "left")
     if fadeDirection == "right" then
       self.icon:SetPoint("LEFT", self.frame, "LEFT")
       self.bar:SetPoint("LEFT", self.icon, "RIGHT")
@@ -103,6 +228,9 @@ function methods:Destroy()
   if Decay.UI.DragDrop and Decay.UI.DragDrop.heldSlot == self then
     Decay.UI.DragDrop.heldSlot = nil
   end
+  Decay.State.activeSlots[self:Key()] = nil
+  self.frame:SetScript("OnUpdate", nil)
+  self.frame.decSlotWidget = nil
   self.frame:Hide()
   self.frame:SetParent(nil)
   self.frame:SetAlpha(1.0)
@@ -110,6 +238,7 @@ function methods:Destroy()
   self.icon = nil
   self.bar = nil
   self.text = nil
+  self.stackText = nil
 end
 
 local function showContextMenu(slot)
@@ -174,21 +303,30 @@ function Slot.New(barWidget, slotIndex)
   local bar = CreateFrame("StatusBar", nil, frame)
   bar:SetStatusBarTexture(DEFAULT_BAR_TEXTURE)
   bar:SetMinMaxValues(0, 1)
-  bar:SetValue(1)
+  bar:SetValue(0)
 
   local text = bar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
   text:SetPoint("CENTER")
-  text:SetText("--")
+  text:SetText("")
+
+  local stackText = frame:CreateFontString(nil, "OVERLAY")
+  stackText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
+  stackText:SetTextColor(1, 1, 1, 1)
+  stackText:SetPoint("TOPRIGHT", icon, "TOPRIGHT", 2, 2)
+  stackText:Hide()
 
   local widget = setmetatable({
     frame = frame,
     icon = icon,
     bar = bar,
     text = text,
+    stackText = stackText,
     barWidget = barWidget,
     index = slotIndex,
+    elapsed = 0,
   }, methods)
 
+  frame.decSlotWidget = widget
   frame:SetScript("OnMouseUp", function(_, button) slotOnMouseUp(widget, button) end)
 
   widget:RefreshDisplay()
