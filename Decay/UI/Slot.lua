@@ -101,8 +101,34 @@ function methods:RefreshActiveDisplay()
   self.icon:SetVertexColor(1, 1, 1, 1)
 
   if self.fillLength then
-    self:RestoreFullBarSize()
     self.bar:SetValue(1)
+    local settings = Decay.db.global.settings
+    local colors = settings.colors
+    if data.duration == 0 then
+      self:SetFill(1)
+      self.bar:SetStatusBarColor(unpack(colors.green))
+      self.text:SetText("∞")
+    else
+      local remaining = data.expirationTime - GetTime()
+      if remaining < 0 then remaining = 0 end
+      local pct = remaining / data.duration
+      self:SetFill(pct)
+      local thresholds = settings.thresholds
+      if pct >= thresholds.yellow then
+        self.bar:SetStatusBarColor(unpack(colors.green))
+      elseif pct >= thresholds.red then
+        self.bar:SetStatusBarColor(unpack(colors.yellow))
+      else
+        self.bar:SetStatusBarColor(unpack(colors.red))
+      end
+      if remaining >= 60 then
+        self.text:SetFormattedText("%d:%02d", floor(remaining/60), floor(remaining%60))
+      elseif remaining >= 10 then
+        self.text:SetFormattedText("%d", remaining)
+      else
+        self.text:SetFormattedText("%.1f", remaining)
+      end
+    end
   end
 
   if data.stackCount and data.stackCount > 1 then
