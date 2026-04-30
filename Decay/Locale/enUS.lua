@@ -75,6 +75,11 @@ L["Move slot"] = true
 L["Manual entry"] = true
 L["Aura name to track:"] = true
 
+L["Auto-link to %s"] = true
+L["Flip to buff"] = true
+L["Flip to debuff"] = true
+L["Dismiss warning"] = true
+
 L["Unknown command: %s"] = true
 L["Reset is not yet implemented"] = true
 L["Logs are not yet implemented"] = true

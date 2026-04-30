@@ -48,6 +48,29 @@ function Decay:OnZoneChanged()
   self.UI.BarManager:ApplyVisibilityRules()
 end
 
+function Decay:OnSpellCastSucceeded(_, unit, spellName)
+  if unit ~= "player" or not spellName then return end
+  local snapshots
+  for _, bar in ipairs(self.db.global.bars) do
+    if bar.slots then
+      for slotIdx, slotCfg in pairs(bar.slots) do
+        if slotCfg.spellName == spellName then
+          if not snapshots then snapshots = self.AuraScanner:CaptureSnapshots() end
+          local key = bar.id .. ":" .. slotIdx
+          self.State.pendingMatch[key] = {
+            startTime = GetTime(),
+            expectedAuraName = slotCfg.auraName,
+            auraType = slotCfg.auraType,
+            spellName = spellName,
+            castSnapshots = snapshots,
+            observedNew = {},
+          }
+        end
+      end
+    end
+  end
+end
+
 function Decay:ResetAll()
   self.db:ResetDB()
   for _, widget in pairs(self.UI.BarManager.bars) do

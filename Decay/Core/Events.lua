@@ -9,4 +9,5 @@ function Events:RegisterAll()
   Decay:RegisterEvent("PLAYER_REGEN_DISABLED", "OnEnterCombat")
   Decay:RegisterEvent("PLAYER_REGEN_ENABLED", "OnLeaveCombat")
   Decay:RegisterEvent("ZONE_CHANGED_NEW_AREA", "OnZoneChanged")
+  Decay:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnSpellCastSucceeded")
 end

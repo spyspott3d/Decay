@@ -89,11 +89,42 @@ function methods:SetAuraType(t)
   local cfg = self:GetConfig()
   if not cfg then return end
   cfg.auraType = t
+  cfg.warning = nil
   Decay.State.activeSlots[self:Key()] = nil
   self.frame:SetScript("OnUpdate", nil)
   self:RefreshDisplay()
   self:UpdateVisibility()
   Decay.AuraScanner:ScanUnit(t == "buff" and "player" or "target")
+end
+
+function methods:ApplyNameAutoLink()
+  local cfg = self:GetConfig()
+  if not cfg or not cfg.warning or cfg.warning.type ~= "name" then return end
+  cfg.auraName = cfg.warning.observedName
+  cfg.warning = nil
+  self:RefreshDisplay()
+  Decay.AuraScanner:RescanAll()
+end
+
+function methods:ApplyTypeAutoLink()
+  local cfg = self:GetConfig()
+  if not cfg or not cfg.warning or cfg.warning.type ~= "type" then return end
+  local newType = (cfg.auraType == "buff") and "debuff" or "buff"
+  cfg.auraType = newType
+  cfg.auraName = cfg.warning.observedName
+  cfg.warning = nil
+  Decay.State.activeSlots[self:Key()] = nil
+  self.frame:SetScript("OnUpdate", nil)
+  self:RefreshDisplay()
+  self:UpdateVisibility()
+  Decay.AuraScanner:RescanAll()
+end
+
+function methods:DismissWarning()
+  local cfg = self:GetConfig()
+  if not cfg then return end
+  cfg.warning = nil
+  self:RefreshDisplay()
 end
 
 function methods:RefreshDisplay()
@@ -113,6 +144,11 @@ function methods:RefreshDisplay()
     self.text:SetText("")
   end
   self.stackText:Hide()
+  if cfg and cfg.warning then
+    self.warningText:Show()
+  else
+    self.warningText:Hide()
+  end
 end
 
 function methods:RefreshActiveDisplay()
@@ -329,6 +365,7 @@ function methods:Destroy()
   self.bar = nil
   self.text = nil
   self.stackText = nil
+  self.warningText = nil
 end
 
 local function showContextMenu(slot)
@@ -346,6 +383,27 @@ local function showContextMenu(slot)
         func = function() Decay.UI.DragDrop:PickupSlot(slot) end },
       { text = CANCEL, notCheckable = true, func = function() end },
     }
+    if cfg.warning then
+      if cfg.warning.type == "name" then
+        table.insert(items, 1, {
+          text = L["Auto-link to %s"]:format(cfg.warning.observedName),
+          notCheckable = true,
+          func = function() slot:ApplyNameAutoLink() end,
+        })
+      elseif cfg.warning.type == "type" then
+        local newType = (cfg.auraType == "buff") and "debuff" or "buff"
+        local label = (newType == "buff") and L["Flip to buff"] or L["Flip to debuff"]
+        table.insert(items, 1, {
+          text = label,
+          notCheckable = true,
+          func = function() slot:ApplyTypeAutoLink() end,
+        })
+      end
+      table.insert(items, 2, {
+        text = L["Dismiss warning"], notCheckable = true,
+        func = function() slot:DismissWarning() end,
+      })
+    end
   else
     items = {
       { text = L["Manual entry"], notCheckable = true,
@@ -406,12 +464,20 @@ function Slot.New(barWidget, slotIndex)
   stackText:SetPoint("TOPRIGHT", icon, "TOPRIGHT", 2, 2)
   stackText:Hide()
 
+  local warningText = frame:CreateFontString(nil, "OVERLAY")
+  warningText:SetFont(TIMER_FONT, 16, "OUTLINE")
+  warningText:SetTextColor(1, 0.7, 0, 1)
+  warningText:SetPoint("BOTTOMRIGHT", icon, "TOPLEFT", 4, -4)
+  warningText:SetText("!")
+  warningText:Hide()
+
   local widget = setmetatable({
     frame = frame,
     icon = icon,
     bar = bar,
     text = text,
     stackText = stackText,
+    warningText = warningText,
     barWidget = barWidget,
     index = slotIndex,
     elapsed = 0,
