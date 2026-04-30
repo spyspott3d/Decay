@@ -7,8 +7,6 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Decay")
 
 function Decay:OnInitialize()
   self.Database:Init()
-  self.UI.BarManager:RestoreAll()
-
   self:RegisterChatCommand("decay", "OnSlashCommand")
   self:RegisterChatCommand("dc", "OnSlashCommand")
 end
@@ -26,6 +24,8 @@ local function ensureOptionsLoaded()
 end
 
 function Decay:OnEnable()
+  self.UI.BarManager:RestoreAll()
+  self.AuraScanner:StartPolling()
   self.Events:RegisterAll()
 end
 
@@ -94,15 +94,17 @@ function Decay:OnSlashCommand(input)
   elseif input == "halt" then
     self.runtimeHalted = true
     self.Events:UnregisterAll()
+    self.AuraScanner:StopPolling()
     for _, widget in pairs(self.UI.BarManager.bars) do
       for _, slot in ipairs(widget.slots) do
         if slot.frame then slot.frame:SetScript("OnUpdate", nil) end
       end
     end
-    self:Print("halted: events unregistered, slot OnUpdates cleared")
+    self:Print("halted: events + poll unregistered, slot OnUpdates cleared")
   elseif input == "resume" then
     self.runtimeHalted = false
     self.Events:RegisterAll()
+    self.AuraScanner:StartPolling()
     self.AuraScanner:RescanAll()
     self:Print("resumed")
   else

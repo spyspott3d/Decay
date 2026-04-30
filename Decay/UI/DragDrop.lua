@@ -69,79 +69,96 @@ function DragDrop:IsHoldingSlot()
   return self.heldSlot ~= nil
 end
 
-local pendingManualSlot = nil
+-- StaticPopupDialogs entries are registered lazily on first use rather
+-- than at file load. Mutating the global StaticPopupDialogs table at
+-- load time tainted secure functions in Ascension's enchant prompt
+-- chain (BindEnchant / ReplaceEnchant), even though we only added our
+-- own keys.
 
-StaticPopupDialogs = StaticPopupDialogs or {}
-StaticPopupDialogs["DECAY_MANUAL_ENTRY"] = {
-  text = L["Aura name to track:"],
-  button1 = ACCEPT,
-  button2 = CANCEL,
-  hasEditBox = true,
-  maxLetters = 64,
-  OnShow = function(self) self.editBox:SetFocus() end,
-  OnAccept = function(self)
-    local name = self.editBox:GetText()
-    local slot = pendingManualSlot
-    pendingManualSlot = nil
-    if not slot or not slot.frame then return end
-    if not name or name == "" then return end
-    local _, _, icon = GetSpellInfo(name)
-    icon = icon or "Interface\\Icons\\INV_Misc_QuestionMark"
-    slot:Assign(name, 0, icon)
-  end,
-  OnCancel = function() pendingManualSlot = nil end,
-  EditBoxOnEnterPressed = function(self)
-    self:GetParent().button1:Click()
-  end,
-  EditBoxOnEscapePressed = function(self)
-    self:GetParent():Hide()
-  end,
-  timeout = 0,
-  whileDead = true,
-  hideOnEscape = true,
-}
+local pendingManualSlot
+local manualEntryRegistered = false
+local function registerManualEntry()
+  if manualEntryRegistered then return end
+  manualEntryRegistered = true
+  StaticPopupDialogs = StaticPopupDialogs or {}
+  StaticPopupDialogs["DECAY_MANUAL_ENTRY"] = {
+    text = L["Aura name to track:"],
+    button1 = ACCEPT,
+    button2 = CANCEL,
+    hasEditBox = true,
+    maxLetters = 64,
+    OnShow = function(self) self.editBox:SetFocus() end,
+    OnAccept = function(self)
+      local name = self.editBox:GetText()
+      local slot = pendingManualSlot
+      pendingManualSlot = nil
+      if not slot or not slot.frame then return end
+      if not name or name == "" then return end
+      local _, _, icon = GetSpellInfo(name)
+      icon = icon or "Interface\\Icons\\INV_Misc_QuestionMark"
+      slot:Assign(name, 0, icon)
+    end,
+    OnCancel = function() pendingManualSlot = nil end,
+    EditBoxOnEnterPressed = function(self)
+      self:GetParent().button1:Click()
+    end,
+    EditBoxOnEscapePressed = function(self)
+      self:GetParent():Hide()
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+  }
+end
 
 function DragDrop:OpenManualEntry(slot)
+  registerManualEntry()
   pendingManualSlot = slot
   StaticPopup_Show("DECAY_MANUAL_ENTRY")
 end
 
-local pendingEditSlot = nil
-
-StaticPopupDialogs["DECAY_EDIT_AURA_NAME"] = {
-  text = L["Aura name to match:"],
-  button1 = ACCEPT,
-  button2 = CANCEL,
-  hasEditBox = true,
-  maxLetters = 64,
-  OnShow = function(self)
-    local slot = pendingEditSlot
-    local cfg = slot and slot:GetConfig()
-    if cfg then self.editBox:SetText(cfg.auraName or "") end
-    self.editBox:HighlightText()
-    self.editBox:SetFocus()
-  end,
-  OnAccept = function(self)
-    local name = self.editBox:GetText()
-    local slot = pendingEditSlot
-    pendingEditSlot = nil
-    if not slot or not slot.frame then return end
-    if not name or name == "" then return end
-    slot:SetAuraName(name)
-  end,
-  OnCancel = function() pendingEditSlot = nil end,
-  EditBoxOnEnterPressed = function(self)
-    self:GetParent().button1:Click()
-  end,
-  EditBoxOnEscapePressed = function(self)
-    self:GetParent():Hide()
-  end,
-  timeout = 0,
-  whileDead = true,
-  hideOnEscape = true,
-}
+local pendingEditSlot
+local editAuraNameRegistered = false
+local function registerEditAuraName()
+  if editAuraNameRegistered then return end
+  editAuraNameRegistered = true
+  StaticPopupDialogs = StaticPopupDialogs or {}
+  StaticPopupDialogs["DECAY_EDIT_AURA_NAME"] = {
+    text = L["Aura name to match:"],
+    button1 = ACCEPT,
+    button2 = CANCEL,
+    hasEditBox = true,
+    maxLetters = 64,
+    OnShow = function(self)
+      local slot = pendingEditSlot
+      local cfg = slot and slot:GetConfig()
+      if cfg then self.editBox:SetText(cfg.auraName or "") end
+      self.editBox:HighlightText()
+      self.editBox:SetFocus()
+    end,
+    OnAccept = function(self)
+      local name = self.editBox:GetText()
+      local slot = pendingEditSlot
+      pendingEditSlot = nil
+      if not slot or not slot.frame then return end
+      if not name or name == "" then return end
+      slot:SetAuraName(name)
+    end,
+    OnCancel = function() pendingEditSlot = nil end,
+    EditBoxOnEnterPressed = function(self)
+      self:GetParent().button1:Click()
+    end,
+    EditBoxOnEscapePressed = function(self)
+      self:GetParent():Hide()
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+  }
+end
 
 function DragDrop:OpenAuraNameEdit(slot)
+  registerEditAuraName()
   pendingEditSlot = slot
   StaticPopup_Show("DECAY_EDIT_AURA_NAME")
 end

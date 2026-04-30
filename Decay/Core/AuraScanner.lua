@@ -87,14 +87,8 @@ local InCombatLockdown = InCombatLockdown
 local IsInInstance = IsInInstance
 local SLOW_POLL_INTERVAL = 1.0
 
-local pollFrame = CreateFrame("Frame", "DecayPollFrame")
-pollFrame.fastElapsed = 0
-pollFrame.slowElapsed = 0
-pollFrame.lastInCombat = nil
-pollFrame.lastInInstance = nil
-pollFrame.initialScanDone = false
-
-pollFrame:SetScript("OnUpdate", function(self, elapsed)
+local pollFrame
+local pollScript = function(self, elapsed)
   if Decay.runtimeHalted then return end
   if not Decay.db then return end
 
@@ -126,6 +120,20 @@ pollFrame:SetScript("OnUpdate", function(self, elapsed)
       end
     end
   end
-end)
+end
 
-AuraScanner.pollFrame = pollFrame
+function AuraScanner:StartPolling()
+  if pollFrame then return end
+  pollFrame = CreateFrame("Frame", "DecayPollFrame")
+  pollFrame.fastElapsed = 0
+  pollFrame.slowElapsed = 0
+  pollFrame.initialScanDone = false
+  pollFrame:SetScript("OnUpdate", pollScript)
+  AuraScanner.pollFrame = pollFrame
+end
+
+function AuraScanner:StopPolling()
+  if pollFrame then
+    pollFrame:SetScript("OnUpdate", nil)
+  end
+end
