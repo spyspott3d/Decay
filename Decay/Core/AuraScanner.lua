@@ -77,29 +77,56 @@ function AuraScanner:RescanAll()
   self:ScanUnit("target")
 end
 
--- OnUpdate poll replaces UNIT_AURA + PLAYER_TARGET_CHANGED event
--- registration. Running at render time keeps our scan code out of the
--- secure call chain that BindEnchant() validates against, so applying
--- weapon poisons on Ascension is no longer blocked. 100ms latency is
--- well below the visible threshold for a regression bar.
+-- All event-based reactions have been replaced by polling here. Decay
+-- registers no game events at all on the Ascension client because the
+-- BindEnchant() secure validator flagged us as tainted as long as any
+-- event was registered, even events that never fire during a weapon
+-- enchant cast. OnUpdate runs at render time after the secure chain
+-- has closed, so it cannot poison BindEnchant.
+
+local InCombatLockdown = InCombatLockdown
+local IsInInstance = IsInInstance
+local SLOW_POLL_INTERVAL = 1.0
+
 local pollFrame = CreateFrame("Frame", "DecayPollFrame")
-pollFrame.elapsed = 0
-pollFrame.lastTargetGUID = nil
+pollFrame.fastElapsed = 0
+pollFrame.slowElapsed = 0
+pollFrame.lastInCombat = nil
+pollFrame.lastInInstance = nil
+pollFrame.initialScanDone = false
 
 pollFrame:SetScript("OnUpdate", function(self, elapsed)
   if Decay.runtimeHalted then return end
-  self.elapsed = self.elapsed + elapsed
-  if self.elapsed < POLL_INTERVAL then return end
-  self.elapsed = 0
   if not Decay.db then return end
 
-  AuraScanner:ScanUnit("player")
-
-  local guid = UnitGUID("target")
-  if guid ~= self.lastTargetGUID then
-    self.lastTargetGUID = guid
+  if not self.initialScanDone then
+    self.initialScanDone = true
+    if Decay.UI and Decay.UI.BarManager then
+      Decay.UI.BarManager:ApplyVisibilityRules()
+    end
   end
-  AuraScanner:ScanUnit("target")
+
+  self.fastElapsed = self.fastElapsed + elapsed
+  if self.fastElapsed >= POLL_INTERVAL then
+    self.fastElapsed = 0
+    AuraScanner:ScanUnit("player")
+    AuraScanner:ScanUnit("target")
+  end
+
+  self.slowElapsed = self.slowElapsed + elapsed
+  if self.slowElapsed >= SLOW_POLL_INTERVAL then
+    self.slowElapsed = 0
+    local inCombat = InCombatLockdown()
+    local inInstance = IsInInstance()
+    if inCombat ~= self.lastInCombat or inInstance ~= self.lastInInstance then
+      self.lastInCombat = inCombat
+      self.lastInInstance = inInstance
+      Decay.State.inCombat = inCombat
+      if Decay.UI and Decay.UI.BarManager then
+        Decay.UI.BarManager:ApplyVisibilityRules()
+      end
+    end
+  end
 end)
 
 AuraScanner.pollFrame = pollFrame
