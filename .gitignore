@@ -25,3 +25,10 @@ release-notes.md
 
 # Backups
 *.orig
+
+# Dev docs (kept local, not on GitHub)
+/CLAUDE.md
+/SPEC.md
+/ARCHITECTURE.md
+/ROADMAP.md
+/docs/
