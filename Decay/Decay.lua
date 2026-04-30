@@ -73,6 +73,23 @@ function Decay:OnSlashCommand(input)
     self:Print(L["All settings reset to defaults"])
   elseif input == "logs" then
     self:Print(L["Logs are not yet implemented"])
+  elseif input == "debug" then
+    self.debugLog = not self.debugLog
+    self:Print("debug = " .. tostring(self.debugLog))
+  elseif input == "halt" then
+    self.runtimeHalted = true
+    self.Events:UnregisterAll()
+    for _, widget in pairs(self.UI.BarManager.bars) do
+      for _, slot in ipairs(widget.slots) do
+        if slot.frame then slot.frame:SetScript("OnUpdate", nil) end
+      end
+    end
+    self:Print("halted: events unregistered, slot OnUpdates cleared")
+  elseif input == "resume" then
+    self.runtimeHalted = false
+    self.Events:RegisterAll()
+    self.AuraScanner:RescanAll()
+    self:Print("resumed")
   else
     self:Print(L["Unknown command: %s"]:format(input))
   end

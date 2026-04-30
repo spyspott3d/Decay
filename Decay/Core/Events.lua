@@ -23,13 +23,23 @@ local handlers = {
 
 local eventFrame = CreateFrame("Frame", "DecayEventFrame")
 eventFrame:SetScript("OnEvent", function(_, event, ...)
+  if Decay.runtimeHalted then return end
+  if Decay.debugLog then
+    print(("|cff80c0ff[Decay]|r %s %s @ %.3f"):format(event, tostring((...)), GetTime()))
+  end
   local methodName = handlers[event]
   local fn = methodName and Decay[methodName]
   if fn then fn(Decay, event, ...) end
 end)
 
+Events.frame = eventFrame
+
 function Events:RegisterAll()
   for event in pairs(handlers) do
     eventFrame:RegisterEvent(event)
   end
+end
+
+function Events:UnregisterAll()
+  eventFrame:UnregisterAllEvents()
 end

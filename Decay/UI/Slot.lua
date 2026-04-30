@@ -171,6 +171,7 @@ function methods:RefreshActiveDisplay()
 end
 
 local function slotOnUpdate(frame, elapsed)
+  if Decay.runtimeHalted then return end
   local widget = frame.decSlotWidget
   if not widget then
     frame:SetScript("OnUpdate", nil)
