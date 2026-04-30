@@ -1,2 +1,83 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("Decay", "deDE")
 if not L then return end
+
+L["Bars"] = "Leisten"
+L["Display"] = "Anzeige"
+L["General"] = "Allgemein"
+
+L["New bar"] = "Neue Leiste"
+L["Unlock bars"] = "Leisten entsperren"
+L["Delete"] = "Löschen"
+L["Delete this bar?"] = "Diese Leiste löschen?"
+L["Duplicate"] = "Duplizieren"
+L["Bar"] = "Leiste"
+
+L["Name"] = "Name"
+L["Orientation"] = "Ausrichtung"
+L["Horizontal"] = "Horizontal"
+L["Vertical"] = "Vertikal"
+L["Fade direction"] = "Auslaufrichtung"
+L["Above"] = "Oben"
+L["Below"] = "Unten"
+L["Left"] = "Links"
+L["Right"] = "Rechts"
+L["Slot count"] = "Plätze"
+
+L["Sort mode"] = "Sortiermodus"
+L["Fixed"] = "Fest"
+L["By remaining time"] = "Nach Restzeit"
+
+L["Position"] = "Position"
+L["Reset position"] = "Position zurücksetzen"
+
+L["Visual"] = "Aussehen"
+L["Icon size"] = "Symbolgröße"
+L["Bar length"] = "Leistenlänge"
+L["Bar thickness"] = "Leistendicke"
+L["Spacing"] = "Abstand"
+L["Texture"] = "Textur"
+L["Default texture"] = "Standardtextur"
+L["Solid"] = "Einfarbig"
+
+L["Timer"] = "Timer"
+L["Show timer text"] = "Timer-Text anzeigen"
+L["Timer text size"] = "Textgröße"
+L["Timer text format"] = "Textformat"
+L["Auto"] = "Auto"
+L["Seconds only"] = "Nur Sekunden"
+L["MM:SS"] = "MM:SS"
+
+L["Thresholds"] = "Schwellen"
+L["Yellow threshold"] = "Gelbe Schwelle"
+L["Red threshold"] = "Rote Schwelle"
+L["Colors"] = "Farben"
+L["Green color"] = "Grün"
+L["Yellow color"] = "Gelb"
+L["Red color"] = "Rot"
+
+L["Default visual settings"] = "Standard-Aussehen"
+L["These apply to bars that have not overridden them."] = "Gilt für Leisten ohne eigene Werte."
+
+L["Visibility rules"] = "Sichtbarkeit"
+L["Combat only"] = "Nur im Kampf"
+L["Hide bars when out of combat"] = "Leisten außerhalb des Kampfes ausblenden"
+L["In instance only"] = "Nur in Instanzen"
+L["Hide bars when not in a dungeon or raid"] = "Leisten außerhalb von Dungeons/Schlachtzügen ausblenden"
+
+L["Reset to defaults"] = "Auf Standard zurücksetzen"
+L["Reset all bars and settings to defaults?"] = "Alle Leisten und Einstellungen zurücksetzen?"
+L["All settings reset to defaults"] = "Alle Einstellungen zurückgesetzt"
+
+L["Clear"] = "Leeren"
+L["Set as buff"] = "Als Buff festlegen"
+L["Set as debuff"] = "Als Debuff festlegen"
+L["Move slot"] = "Platz verschieben"
+L["Manual entry"] = "Manuelle Eingabe"
+L["Aura name to track:"] = "Aura-Name zum Verfolgen:"
+
+L["Edit aura name"] = "Aura-Name bearbeiten"
+L["Aura name to match:"] = "Aura-Name zum Abgleich:"
+
+L["Unknown command: %s"] = "Unbekannter Befehl: %s"
+L["Reset is not yet implemented"] = "Zurücksetzen noch nicht implementiert"
+L["Logs are not yet implemented"] = "Logs noch nicht implementiert"
