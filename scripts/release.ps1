@@ -19,6 +19,9 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+# PowerShell 7.3+ otherwise raises an exception when a native command
+# writes anything to stderr, even informational lines from git.
+$PSNativeCommandUseErrorActionPreference = $false
 
 $Tag = "v$Version"
 $Toc = "Decay\Decay.toc"
@@ -49,11 +52,12 @@ if (-not [string]::IsNullOrWhiteSpace($dirty)) {
     exit 1
 }
 
-git rev-parse $Tag 2>&1 | Out-Null
-if ($LASTEXITCODE -eq 0) {
+$existingTags = & git tag --list $Tag 2>$null
+if (-not [string]::IsNullOrWhiteSpace($existingTags)) {
     Write-Host "[release] Tag $Tag already exists." -ForegroundColor Red
     exit 1
 }
+$global:LASTEXITCODE = 0
 
 $currentBranch = git rev-parse --abbrev-ref HEAD
 Assert-LastExitCode "git rev-parse --abbrev-ref HEAD"
