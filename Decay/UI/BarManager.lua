@@ -32,7 +32,9 @@ local function defaultBarConfig(index)
     orientation = "horizontal",
     fadeDirection = "above",
     slotCount = 4,
+    sortMode = "fixed",
     slots = {},
+    visual = {},
     position = {
       point = "CENTER",
       relativeTo = "UIParent",
@@ -41,6 +43,15 @@ local function defaultBarConfig(index)
       y = -100,
     },
   }
+end
+
+local function deepCopy(t)
+  if type(t) ~= "table" then return t end
+  local out = {}
+  for k, v in pairs(t) do
+    out[k] = deepCopy(v)
+  end
+  return out
 end
 
 function BarManager:RestoreAll()
@@ -54,6 +65,24 @@ function BarManager:CreateBar()
   table.insert(Decay.db.global.bars, barConfig)
   self.bars[barConfig.id] = Decay.UI.Bar.New(barConfig)
   return barConfig
+end
+
+function BarManager:DuplicateBar(barId)
+  local source
+  for _, bc in ipairs(Decay.db.global.bars) do
+    if bc.id == barId then source = bc break end
+  end
+  if not source then return end
+
+  local copy = deepCopy(source)
+  copy.id = generateId()
+  copy.name = source.name .. " (copy)"
+  copy.position = deepCopy(source.position)
+  copy.position.x = source.position.x + 20
+  copy.position.y = source.position.y - 20
+  table.insert(Decay.db.global.bars, copy)
+  self.bars[copy.id] = Decay.UI.Bar.New(copy)
+  return copy
 end
 
 function BarManager:DeleteBar(barId)
@@ -87,9 +116,24 @@ function BarManager:UpdateBar(barId)
   end
 end
 
+function BarManager:UpdateAll()
+  for _, widget in pairs(self.bars) do
+    widget:UpdateLayout()
+  end
+  if Decay.AuraScanner then
+    Decay.AuraScanner:RescanAll()
+  end
+end
+
 function BarManager:ApplyLockState()
   local unlocked = Decay.db.global.state.unlocked
   for _, widget in pairs(self.bars) do
     widget:ApplyLockState(unlocked)
+  end
+end
+
+function BarManager:ApplyVisibilityRules()
+  for _, widget in pairs(self.bars) do
+    widget:ApplyVisibilityRules()
   end
 end

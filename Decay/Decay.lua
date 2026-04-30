@@ -21,6 +21,7 @@ end
 function Decay:OnEnterWorld()
   self.State:Reset()
   self.AuraScanner:InitialScan()
+  self.UI.BarManager:ApplyVisibilityRules()
 end
 
 function Decay:OnUnitAura(_, unit)
@@ -35,10 +36,27 @@ end
 
 function Decay:OnEnterCombat()
   self.State.inCombat = true
+  self.UI.BarManager:ApplyVisibilityRules()
 end
 
 function Decay:OnLeaveCombat()
   self.State.inCombat = false
+  self.UI.BarManager:ApplyVisibilityRules()
+end
+
+function Decay:OnZoneChanged()
+  self.UI.BarManager:ApplyVisibilityRules()
+end
+
+function Decay:ResetAll()
+  self.db:ResetDB()
+  for _, widget in pairs(self.UI.BarManager.bars) do
+    widget:Destroy()
+  end
+  self.UI.BarManager.bars = {}
+  self.State:Reset()
+  self.UI.BarManager:RestoreAll()
+  self.Config.Options:Refresh()
 end
 
 function Decay:OnSlashCommand(input)
@@ -50,7 +68,8 @@ function Decay:OnSlashCommand(input)
   elseif input == "unlock" then
     self.UI.Lock:Set(true)
   elseif input == "reset" then
-    self:Print(L["Reset is not yet implemented"])
+    self:ResetAll()
+    self:Print(L["All settings reset to defaults"])
   elseif input == "logs" then
     self:Print(L["Logs are not yet implemented"])
   else

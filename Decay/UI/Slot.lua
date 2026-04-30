@@ -22,6 +22,7 @@ local DEFAULT_BAR_TEXTURE = "Interface\\TargetingFrame\\UI-StatusBar"
 local INACTIVE_BAR_COLOR = { 0.4, 0.4, 0.4, 0.6 }
 local EMPTY_BAR_COLOR = { 0.3, 0.3, 0.3, 0.4 }
 local THROTTLE = 0.05
+local TIMER_FONT = "Fonts\\FRIZQT__.TTF"
 
 local menuFrame = CreateFrame("Frame", "DecaySlotContextMenu", UIParent, "UIDropDownMenuTemplate")
 
@@ -35,6 +36,27 @@ end
 function methods:GetConfig()
   local slots = self.barWidget.config.slots
   return slots and slots[self.index]
+end
+
+local function setTimerText(widget, remaining)
+  if not widget.showTimerText then
+    widget.text:SetText("")
+    return
+  end
+  local format = widget.timerFormat or "auto"
+  if format == "seconds" then
+    widget.text:SetFormattedText("%d", remaining)
+  elseif format == "mm:ss" then
+    widget.text:SetFormattedText("%d:%02d", floor(remaining/60), floor(remaining%60))
+  else
+    if remaining >= 60 then
+      widget.text:SetFormattedText("%d:%02d", floor(remaining/60), floor(remaining%60))
+    elseif remaining >= 10 then
+      widget.text:SetFormattedText("%d", remaining)
+    else
+      widget.text:SetFormattedText("%.1f", remaining)
+    end
+  end
 end
 
 function methods:Assign(spellName, spellID, icon)
@@ -60,6 +82,7 @@ function methods:Clear()
   self.frame:SetScript("OnUpdate", nil)
   self:RefreshDisplay()
   self:UpdateVisibility()
+  self.barWidget:RelayoutIfDynamic()
 end
 
 function methods:SetAuraType(t)
@@ -107,7 +130,7 @@ function methods:RefreshActiveDisplay()
     if data.duration == 0 then
       self:SetFill(1)
       self.bar:SetStatusBarColor(unpack(colors.green))
-      self.text:SetText("∞")
+      if self.showTimerText then self.text:SetText("∞") else self.text:SetText("") end
     else
       local remaining = data.expirationTime - GetTime()
       if remaining < 0 then remaining = 0 end
@@ -121,13 +144,7 @@ function methods:RefreshActiveDisplay()
       else
         self.bar:SetStatusBarColor(unpack(colors.red))
       end
-      if remaining >= 60 then
-        self.text:SetFormattedText("%d:%02d", floor(remaining/60), floor(remaining%60))
-      elseif remaining >= 10 then
-        self.text:SetFormattedText("%d", remaining)
-      else
-        self.text:SetFormattedText("%.1f", remaining)
-      end
+      setTimerText(self, remaining)
     end
   end
 
@@ -137,6 +154,8 @@ function methods:RefreshActiveDisplay()
   else
     self.stackText:Hide()
   end
+
+  self.barWidget:RelayoutIfDynamic()
 end
 
 local function slotOnUpdate(frame, elapsed)
@@ -164,7 +183,7 @@ local function slotOnUpdate(frame, elapsed)
     widget:SetFill(1)
     widget.bar:SetValue(1)
     widget.bar:SetStatusBarColor(unpack(colors.green))
-    widget.text:SetText("∞")
+    if widget.showTimerText then widget.text:SetText("∞") else widget.text:SetText("") end
     return
   end
 
@@ -189,13 +208,7 @@ local function slotOnUpdate(frame, elapsed)
     widget.bar:SetStatusBarColor(unpack(colors.red))
   end
 
-  if remaining >= 60 then
-    widget.text:SetFormattedText("%d:%02d", floor(remaining/60), floor(remaining%60))
-  elseif remaining >= 10 then
-    widget.text:SetFormattedText("%d", remaining)
-  else
-    widget.text:SetFormattedText("%.1f", remaining)
-  end
+  setTimerText(widget, remaining)
 end
 
 function methods:Activate()
@@ -203,12 +216,14 @@ function methods:Activate()
   self:UpdateVisibility()
   self.elapsed = 0
   self.frame:SetScript("OnUpdate", slotOnUpdate)
+  self.barWidget:RelayoutIfDynamic()
 end
 
 function methods:Deactivate()
   self.frame:SetScript("OnUpdate", nil)
   self:RefreshDisplay()
   self:UpdateVisibility()
+  self.barWidget:RelayoutIfDynamic()
 end
 
 function methods:UpdateVisibility()
@@ -259,6 +274,16 @@ function methods:Layout(orientation, fadeDirection, iconSize, barLength, barThic
       self.bar:SetPoint("RIGHT", self.icon, "LEFT")
     end
   end
+end
+
+function methods:ApplyTimerSettings(showText, size, format)
+  self.showTimerText = showText and true or false
+  self.timerFormat = format or "auto"
+  self.text:SetFont(TIMER_FONT, size or 12, "OUTLINE")
+end
+
+function methods:ApplyTexture(texture)
+  self.bar:SetStatusBarTexture(texture or DEFAULT_BAR_TEXTURE)
 end
 
 function methods:SetFill(pct)
@@ -359,12 +384,13 @@ function Slot.New(barWidget, slotIndex)
   bar:SetMinMaxValues(0, 1)
   bar:SetValue(0)
 
-  local text = bar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+  local text = bar:CreateFontString(nil, "OVERLAY")
+  text:SetFont(TIMER_FONT, 12, "OUTLINE")
   text:SetPoint("CENTER")
   text:SetText("")
 
   local stackText = frame:CreateFontString(nil, "OVERLAY")
-  stackText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
+  stackText:SetFont(TIMER_FONT, 12, "OUTLINE")
   stackText:SetTextColor(1, 1, 1, 1)
   stackText:SetPoint("TOPRIGHT", icon, "TOPRIGHT", 2, 2)
   stackText:Hide()
@@ -378,6 +404,8 @@ function Slot.New(barWidget, slotIndex)
     barWidget = barWidget,
     index = slotIndex,
     elapsed = 0,
+    showTimerText = true,
+    timerFormat = "auto",
   }, methods)
 
   frame.decSlotWidget = widget

@@ -5,24 +5,48 @@ local Bar = Decay.UI.Bar
 
 local CreateFrame = CreateFrame
 local UIParent = UIParent
+local GetTime = GetTime
+local IsInInstance = IsInInstance
 local max = math.max
+local huge = math.huge
+local sort = table.sort
+local ipairs = ipairs
 
 local FRAME_PREFIX = "DecayBarFrame"
 local frameCounter = 0
-
-local ICON_SIZE = 32
-local BAR_LENGTH = 100
-local BAR_THICKNESS = 32
-local SPACING = 4
 local HANDLE_SIZE = 12
 
 local methods = {}
 methods.__index = methods
 
+function methods:GetVisual(key)
+  local v = self.config.visual and self.config.visual[key]
+  if v ~= nil then return v end
+  return Decay.db.global.settings.defaults[key]
+end
+
 function methods:ApplyPosition()
   local pos = self.config.position
   self.frame:ClearAllPoints()
   self.frame:SetPoint(pos.point, UIParent, pos.relativePoint, pos.x, pos.y)
+end
+
+function methods:ResetPosition()
+  self.config.position.point = "CENTER"
+  self.config.position.relativePoint = "CENTER"
+  self.config.position.x = 0
+  self.config.position.y = -100
+  self:ApplyPosition()
+end
+
+function methods:HiddenByRules()
+  local rules = Decay.db.global.settings.visibility
+  if rules.combatOnly and not Decay.State.inCombat then return true end
+  if rules.inInstanceOnly then
+    local inInstance = IsInInstance()
+    if not inInstance then return true end
+  end
+  return false
 end
 
 function methods:ApplyLockState(unlocked)
@@ -38,6 +62,21 @@ function methods:ApplyLockState(unlocked)
     self.frame:SetFrameStrata("MEDIUM")
     self.frame:SetFrameLevel(0)
   end
+  if not unlocked and self:HiddenByRules() then
+    self.frame:Hide()
+  else
+    self.frame:Show()
+  end
+  self:RelayoutIfDynamic()
+end
+
+function methods:ApplyVisibilityRules()
+  local unlocked = Decay.db.global.state.unlocked
+  if not unlocked and self:HiddenByRules() then
+    self.frame:Hide()
+  else
+    self.frame:Show()
+  end
 end
 
 function methods:CreateSlots()
@@ -51,36 +90,82 @@ function methods:CreateSlots()
   end
 end
 
+function methods:GetActiveSlotsSorted()
+  local config = self.config
+  local activeSlots = Decay.State.activeSlots
+  local barId = config.id
+  local now = GetTime()
+
+  local order = {}
+  for i = 1, config.slotCount do
+    local key = barId .. ":" .. i
+    if activeSlots[key] then
+      order[#order + 1] = i
+    end
+  end
+
+  sort(order, function(a, b)
+    local da = activeSlots[barId..":"..a]
+    local db = activeSlots[barId..":"..b]
+    local ra = (da.duration == 0) and huge or (da.expirationTime - now)
+    local rb = (db.duration == 0) and huge or (db.expirationTime - now)
+    return ra > rb
+  end)
+
+  return order
+end
+
 function methods:LayoutSlots()
   local config = self.config
   local orientation = config.orientation
   local fadeDir = config.fadeDirection
   local horizontal = orientation == "horizontal"
+  local iconSize = self:GetVisual("iconSize")
+  local barLength = self:GetVisual("barLength")
+  local barThickness = self:GetVisual("barThickness")
+  local spacing = self:GetVisual("spacing")
+  local stride = max(iconSize, barThickness) + spacing
 
-  for i = 1, config.slotCount do
-    local slot = self.slots[i]
-    slot:Layout(orientation, fadeDir, ICON_SIZE, BAR_LENGTH, BAR_THICKNESS)
-    slot.frame:ClearAllPoints()
-    if horizontal then
-      local x = (i - 1) * (max(ICON_SIZE, BAR_THICKNESS) + SPACING)
-      slot.frame:SetPoint("TOPLEFT", self.frame, "TOPLEFT", x, 0)
-    else
-      local y = -(i - 1) * (max(ICON_SIZE, BAR_THICKNESS) + SPACING)
-      slot.frame:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 0, y)
+  local locked = not Decay.db.global.state.unlocked
+  local order
+  if config.sortMode == "byRemaining" and locked then
+    order = self:GetActiveSlotsSorted()
+  else
+    order = {}
+    for i = 1, config.slotCount do order[i] = i end
+  end
+
+  for displayIdx, slotIdx in ipairs(order) do
+    local slot = self.slots[slotIdx]
+    if slot then
+      slot:Layout(orientation, fadeDir, iconSize, barLength, barThickness)
+      slot:ApplyTimerSettings(self:GetVisual("showTimerText"),
+        self:GetVisual("timerTextSize"), self:GetVisual("timerTextFormat"))
+      slot:ApplyTexture(self:GetVisual("texture"))
+      slot.frame:ClearAllPoints()
+      if horizontal then
+        slot.frame:SetPoint("TOPLEFT", self.frame, "TOPLEFT", (displayIdx - 1) * stride, 0)
+      else
+        slot.frame:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 0, -(displayIdx - 1) * stride)
+      end
     end
   end
 end
 
 function methods:Resize()
   local count = self.config.slotCount
+  local iconSize = self:GetVisual("iconSize")
+  local barLength = self:GetVisual("barLength")
+  local barThickness = self:GetVisual("barThickness")
+  local spacing = self:GetVisual("spacing")
   if self.config.orientation == "horizontal" then
-    local slotW = max(ICON_SIZE, BAR_THICKNESS)
-    local slotH = ICON_SIZE + BAR_LENGTH
-    self.frame:SetSize(count * slotW + (count - 1) * SPACING, slotH)
+    local slotW = max(iconSize, barThickness)
+    local slotH = iconSize + barLength
+    self.frame:SetSize(count * slotW + (count - 1) * spacing, slotH)
   else
-    local slotW = ICON_SIZE + BAR_LENGTH
-    local slotH = max(ICON_SIZE, BAR_THICKNESS)
-    self.frame:SetSize(slotW, count * slotH + (count - 1) * SPACING)
+    local slotW = iconSize + barLength
+    local slotH = max(iconSize, barThickness)
+    self.frame:SetSize(slotW, count * slotH + (count - 1) * spacing)
   end
 end
 
@@ -98,6 +183,12 @@ function methods:UpdateLayout()
     else
       slot:RefreshDisplay()
     end
+  end
+end
+
+function methods:RelayoutIfDynamic()
+  if self.config.sortMode == "byRemaining" then
+    self:LayoutSlots()
   end
 end
 
@@ -120,6 +211,8 @@ local function applyDefaults(barConfig)
   barConfig.fadeDirection = barConfig.fadeDirection or "above"
   barConfig.slotCount = barConfig.slotCount or 4
   barConfig.slots = barConfig.slots or {}
+  barConfig.sortMode = barConfig.sortMode or "fixed"
+  barConfig.visual = barConfig.visual or {}
 end
 
 local function savePosition(frame, barConfig)

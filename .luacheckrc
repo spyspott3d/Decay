@@ -14,7 +14,7 @@ stds.playerwow = {
     "GetSpellInfo", "GetSpellTexture", "GetSpellBookItemInfo",
     "GetSpellLink", "GetSpellBookItemName",
     "PickupSpell", "ClearCursor", "CursorHasSpell", "GetCursorInfo",
-    "CreateFrame", "InCombatLockdown", "GetLocale",
+    "CreateFrame", "InCombatLockdown", "GetLocale", "IsInInstance",
     "IsShiftKeyDown", "IsControlKeyDown", "IsAltKeyDown",
     "EasyMenu", "StaticPopup_Show",
     "UIParent", "GameTooltip", "ACCEPT", "CANCEL",

@@ -8,4 +8,5 @@ function Events:RegisterAll()
   Decay:RegisterEvent("PLAYER_TARGET_CHANGED", "OnTargetChanged")
   Decay:RegisterEvent("PLAYER_REGEN_DISABLED", "OnEnterCombat")
   Decay:RegisterEvent("PLAYER_REGEN_ENABLED", "OnLeaveCombat")
+  Decay:RegisterEvent("ZONE_CHANGED_NEW_AREA", "OnZoneChanged")
 end
