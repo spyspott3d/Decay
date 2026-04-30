@@ -80,8 +80,10 @@ end
 
 function BarManager:UpdateBar(barId)
   local widget = self.bars[barId]
-  if widget then
-    widget:UpdateLayout()
+  if not widget then return end
+  widget:UpdateLayout()
+  if Decay.AuraScanner then
+    Decay.AuraScanner:RescanAll()
   end
 end
 

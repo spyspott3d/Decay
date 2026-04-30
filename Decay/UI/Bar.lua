@@ -89,9 +89,15 @@ function methods:UpdateLayout()
   self:LayoutSlots()
   self:Resize()
   local unlocked = Decay.db.global.state.unlocked
+  local activeSlots = Decay.State and Decay.State.activeSlots
   for i = 1, self.config.slotCount do
-    self.slots[i]:RefreshDisplay()
-    self.slots[i]:ApplyLockState(unlocked)
+    local slot = self.slots[i]
+    slot:ApplyLockState(unlocked)
+    if activeSlots and activeSlots[slot:Key()] then
+      slot:RefreshActiveDisplay()
+    else
+      slot:RefreshDisplay()
+    end
   end
 end
 
