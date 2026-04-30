@@ -4,7 +4,6 @@ local AuraScanner = Decay.AuraScanner
 
 local UnitAura = UnitAura
 local UnitExists = UnitExists
-local UnitGUID = UnitGUID
 local CreateFrame = CreateFrame
 local ipairs = ipairs
 local pairs = pairs
