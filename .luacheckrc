@@ -18,6 +18,7 @@ stds.playerwow = {
     "IsShiftKeyDown", "IsControlKeyDown", "IsAltKeyDown",
     "EasyMenu", "StaticPopup_Show", "LoadAddOn",
     "UIParent", "GameTooltip", "ACCEPT", "CANCEL",
+    "DEFAULT_CHAT_FRAME",
     "PLAYER_LOGIN", "UNIT_AURA",
     "string", "table", "math", "tostring", "tonumber",
     "pairs", "ipairs", "select", "type", "unpack", "next",
