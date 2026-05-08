@@ -22,7 +22,7 @@ methods.__index = methods
 function methods:GetVisual(key)
   local v = self.config.visual and self.config.visual[key]
   if v ~= nil then return v end
-  return Decay.db.global.settings.defaults[key]
+  return Decay.db.profile.settings.defaults[key]
 end
 
 function methods:ApplyPosition()
@@ -72,7 +72,7 @@ function methods:ApplyLockState(unlocked)
 end
 
 function methods:ApplyVisibilityRules()
-  local unlocked = Decay.db.global.state.unlocked
+  local unlocked = Decay.db.profile.state.unlocked
   if not unlocked and self:HiddenByRules() then
     self.frame:Hide()
   else
@@ -127,7 +127,7 @@ function methods:LayoutSlots()
   local spacing = self:GetVisual("spacing")
   local stride = max(iconSize, barThickness) + spacing
 
-  local locked = not Decay.db.global.state.unlocked
+  local locked = not Decay.db.profile.state.unlocked
   local order
   if config.sortMode == "byRemaining" and locked then
     order = self:GetActiveSlotsSorted()
@@ -174,7 +174,7 @@ function methods:UpdateLayout()
   self:CreateSlots()
   self:LayoutSlots()
   self:Resize()
-  local unlocked = Decay.db.global.state.unlocked
+  local unlocked = Decay.db.profile.state.unlocked
   local activeSlots = Decay.State and Decay.State.activeSlots
   for i = 1, self.config.slotCount do
     local slot = self.slots[i]
@@ -262,7 +262,7 @@ function Bar.New(barConfig)
   frame:SetMovable(true)
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function(self)
-    if Decay.db.global.state.unlocked then
+    if Decay.db.profile.state.unlocked then
       self:StartMoving()
     end
   end)
@@ -282,6 +282,6 @@ function Bar.New(barConfig)
 
   widget:UpdateLayout()
   widget:ApplyPosition()
-  widget:ApplyLockState(Decay.db.global.state.unlocked)
+  widget:ApplyLockState(Decay.db.profile.state.unlocked)
   return widget
 end

@@ -143,7 +143,7 @@ function methods:RefreshActiveDisplay()
 
   if self.fillLength then
     self.bar:SetValue(1)
-    local settings = Decay.db.global.settings
+    local settings = Decay.db.profile.settings
     local colors = settings.colors
     if data.duration == 0 then
       self:SetFill(1)
@@ -195,7 +195,7 @@ local function slotOnUpdate(frame, elapsed)
     return
   end
 
-  local settings = Decay.db.global.settings
+  local settings = Decay.db.profile.settings
   local colors = settings.colors
 
   if data.duration == 0 then
@@ -247,7 +247,7 @@ end
 
 function methods:UpdateVisibility()
   local active = Decay.State.activeSlots[self:Key()]
-  local unlocked = Decay.db.global.state.unlocked
+  local unlocked = Decay.db.profile.state.unlocked
   if active or unlocked then
     self.frame:Show()
   else
@@ -378,7 +378,7 @@ local function showContextMenu(slot)
 end
 
 local function slotOnMouseUp(slot, button)
-  if not Decay.db.global.state.unlocked then return end
+  if not Decay.db.profile.state.unlocked then return end
 
   if button == "RightButton" then
     showContextMenu(slot)

@@ -37,7 +37,7 @@ function AuraScanner:ScanUnit(unit)
   local activeSlots = Decay.State.activeSlots
   local barWidgets = Decay.UI.BarManager.bars
 
-  for _, bar in ipairs(Decay.db.global.bars) do
+  for _, bar in ipairs(Decay.db.profile.bars) do
     local slots = bar.slots
     if slots then
       for slotIdx, slotCfg in pairs(slots) do

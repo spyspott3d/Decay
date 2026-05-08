@@ -59,21 +59,21 @@ local function deepCopy(t)
 end
 
 function BarManager:RestoreAll()
-  for _, barConfig in ipairs(Decay.db.global.bars) do
+  for _, barConfig in ipairs(Decay.db.profile.bars) do
     self.bars[barConfig.id] = Decay.UI.Bar.New(barConfig)
   end
 end
 
 function BarManager:CreateBar()
-  local barConfig = defaultBarConfig(#Decay.db.global.bars + 1)
-  table.insert(Decay.db.global.bars, barConfig)
+  local barConfig = defaultBarConfig(#Decay.db.profile.bars + 1)
+  table.insert(Decay.db.profile.bars, barConfig)
   self.bars[barConfig.id] = Decay.UI.Bar.New(barConfig)
   return barConfig
 end
 
 function BarManager:DuplicateBar(barId)
   local source
-  for _, bc in ipairs(Decay.db.global.bars) do
+  for _, bc in ipairs(Decay.db.profile.bars) do
     if bc.id == barId then source = bc break end
   end
   if not source then return end
@@ -84,15 +84,15 @@ function BarManager:DuplicateBar(barId)
   copy.position = deepCopy(source.position)
   copy.position.x = source.position.x + 20
   copy.position.y = source.position.y - 20
-  table.insert(Decay.db.global.bars, copy)
+  table.insert(Decay.db.profile.bars, copy)
   self.bars[copy.id] = Decay.UI.Bar.New(copy)
   return copy
 end
 
 function BarManager:DeleteBar(barId)
-  for i, bc in ipairs(Decay.db.global.bars) do
+  for i, bc in ipairs(Decay.db.profile.bars) do
     if bc.id == barId then
-      table.remove(Decay.db.global.bars, i)
+      table.remove(Decay.db.profile.bars, i)
       break
     end
   end
@@ -104,7 +104,7 @@ function BarManager:DeleteBar(barId)
 end
 
 function BarManager:RenameDefaults()
-  for i, bc in ipairs(Decay.db.global.bars) do
+  for i, bc in ipairs(Decay.db.profile.bars) do
     if isDefaultName(bc.name) then
       bc.name = defaultName(i)
     end
@@ -130,7 +130,7 @@ function BarManager:UpdateAll()
 end
 
 function BarManager:ApplyLockState()
-  local unlocked = Decay.db.global.state.unlocked
+  local unlocked = Decay.db.profile.state.unlocked
   for _, widget in pairs(self.bars) do
     widget:ApplyLockState(unlocked)
   end

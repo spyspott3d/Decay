@@ -33,18 +33,18 @@ local function defaultFadeFor(orientation)
 end
 
 local function colorGet(key)
-  local c = Decay.db.global.settings.colors[key]
+  local c = Decay.db.profile.settings.colors[key]
   return c[1], c[2], c[3], c[4]
 end
 
 local function colorSet(key, r, g, b, a)
-  Decay.db.global.settings.colors[key] = { r, g, b, a }
+  Decay.db.profile.settings.colors[key] = { r, g, b, a }
 end
 
 local function visualGetter(bc, key)
   return function()
     local v = bc.visual and bc.visual[key]
-    if v == nil then return Decay.db.global.settings.defaults[key] end
+    if v == nil then return Decay.db.profile.settings.defaults[key] end
     return v
   end
 end
@@ -234,7 +234,7 @@ local function buildBarsTabArgs()
       end,
     },
   }
-  for i, bc in ipairs(Decay.db.global.bars) do
+  for i, bc in ipairs(Decay.db.profile.bars) do
     local key = "bar_" .. (bc.id:gsub("-", "_"))
     args[key] = {
       type = "group", name = bc.name, order = 10 + i, inline = true,
@@ -251,24 +251,24 @@ local function buildDisplayTabArgs()
       type = "range", name = L["Upper threshold"], order = 2,
       desc = L["Above this remaining-time percentage, the bar uses the high color."],
       min = 0.05, max = 0.95, step = 0.01, isPercent = true,
-      get = function() return Decay.db.global.settings.thresholds.yellow end,
+      get = function() return Decay.db.profile.settings.thresholds.yellow end,
       set = function(_, val)
-        local red = Decay.db.global.settings.thresholds.red
+        local red = Decay.db.profile.settings.thresholds.red
         if val <= red then val = red + 0.05 end
         if val > 0.95 then val = 0.95 end
-        Decay.db.global.settings.thresholds.yellow = val
+        Decay.db.profile.settings.thresholds.yellow = val
       end,
     },
     redThreshold = {
       type = "range", name = L["Lower threshold"], order = 3,
       desc = L["Below this remaining-time percentage, the bar uses the low color."],
       min = 0.01, max = 0.9, step = 0.01, isPercent = true,
-      get = function() return Decay.db.global.settings.thresholds.red end,
+      get = function() return Decay.db.profile.settings.thresholds.red end,
       set = function(_, val)
-        local yellow = Decay.db.global.settings.thresholds.yellow
+        local yellow = Decay.db.profile.settings.thresholds.yellow
         if val >= yellow then val = yellow - 0.05 end
         if val < 0.01 then val = 0.01 end
-        Decay.db.global.settings.thresholds.red = val
+        Decay.db.profile.settings.thresholds.red = val
       end,
     },
     colorsHeader = { type = "header", name = L["Colors"], order = 10 },
@@ -318,19 +318,24 @@ local function buildOptionsTable()
 end
 
 function Options:Init()
+  if self.initialized then return end
   LibStub("AceConfig-3.0"):RegisterOptionsTable(APP, buildOptionsTable)
   self.dialog = LibStub("AceConfigDialog-3.0")
+  self.initialized = true
 end
 
 function Options:Open()
+  self:Init()
   self.dialog:Open(APP)
 end
 
 function Options:Close()
+  self:Init()
   self.dialog:Close(APP)
 end
 
 function Options:Toggle()
+  self:Init()
   if self.dialog.OpenFrames[APP] then
     self:Close()
   else

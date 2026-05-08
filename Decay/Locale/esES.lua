@@ -80,3 +80,4 @@ L["Aura name to match:"] = "Nombre del aura a coincidir:"
 
 L["Unknown command: %s"] = "Comando desconocido: %s"
 L["Logs are not yet implemented"] = "Los logs aún no están implementados"
+L["Settings migrated to character profile: %s"] = "Ajustes migrados al perfil del personaje: %s"

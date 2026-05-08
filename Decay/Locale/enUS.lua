@@ -80,3 +80,4 @@ L["Aura name to match:"] = true
 
 L["Unknown command: %s"] = true
 L["Logs are not yet implemented"] = true
+L["Settings migrated to character profile: %s"] = true

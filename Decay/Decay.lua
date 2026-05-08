@@ -50,7 +50,7 @@ end
 
 
 function Decay:ResetAll()
-  self.db:ResetDB()
+  self.db:ResetProfile()
   for _, widget in pairs(self.UI.BarManager.bars) do
     widget:Destroy()
   end

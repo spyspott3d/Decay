@@ -80,3 +80,4 @@ L["Aura name to match:"] = "要匹配的光环名称:"
 
 L["Unknown command: %s"] = "未知命令: %s"
 L["Logs are not yet implemented"] = "日志尚未实现"
+L["Settings migrated to character profile: %s"] = "设置已迁移到角色配置档案: %s"
