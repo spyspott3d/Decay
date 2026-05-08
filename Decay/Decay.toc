@@ -6,7 +6,7 @@
 ## Notes-esES: Seguidor de buffs propios y debuffs en el objetivo.
 ## Notes-zhCN: è‡ªèº«å¢žç›Šå’Œç›®æ ‡å‡ç›Šçš„è¿½è¸ªå™¨ã€‚
 ## Author: spyspott3d
-## Version: 1.0.0
+## Version: 1.0.1
 ## SavedVariables: DecayDB
 ## OptionalDeps: Ace3
 ## DefaultState: enabled
